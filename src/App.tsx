@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
+import Dashboard from './containers/Dashboard/Dashboard';
+import path from './utils/data/path';
+import Login from './containers/Public/Login';
+import Home from './containers/Public/Home';
+import Register from './containers/Public/Register';
+import OtpPage from './containers/Public/OtpPage';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+
+   return (
+      <BrowserRouter>
+         <Routes>
+            {/* System */}
+            <Route path={path.DASHBOARD} element={<Dashboard />}>
+               {/* Outlook */}
+            </Route>
+            {/* User */}
+            <Route path={path.LOGIN} element={<Login />} />
+            <Route path={path.REGISTER} element={<Register />} />
+            <Route path={path.VERIFY_OTP} element={<OtpPage />} />
+            <Route path={path.HOME} element={<Home />} >
+               {/* Outlook */}
+            </Route>
+         </Routes>
+      </BrowserRouter>
+   )
 }
 
-export default App;
+export default App
