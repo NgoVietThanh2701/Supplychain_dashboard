@@ -1,5 +1,5 @@
 import React from 'react'
-import FormOTP from '../../components/FormOTP';
+import FormOTP from '../../components/Public/FormOTP';
 import { useParams } from 'react-router-dom';
 
 const OtpPage = () => {

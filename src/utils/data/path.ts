@@ -1,13 +1,14 @@
 const path = {
    // dashboard
-   DASHBOARD: '/dashboard/*',
+   DASHBOARD: '/dashboard',
    ECOMMERCE: 'ecommerce',
-   // -------------
+   // --------------
    LOGIN: '/login/:role',
    REGISTER: '/register/:role',
-   // user
+   VERIFY_OTP: '/register/:role/:email/verify-otp',
    HOME: '/*',
-   VERIFY_OTP: '/register/:role/:email/verify-otp'
+   SHOP: '/shop',
+   SINGLE_PRODUCT: '/single-product/:code'
 }
 
 export default path

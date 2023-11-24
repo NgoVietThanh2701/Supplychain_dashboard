@@ -1,22 +1,32 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import action from "./actionType";
-import { apiLogin } from "../services/authServicer";
+import { apiLogin, apiRefreshToken } from "../services/authServices";
 
 const initState = {
    isLoggedIn: false,
    token: null,
-   refresh_token: null,
+   refreshToken: null,
    refresh_expired: false,
-   msg: ""
+   updateError: false,
+   msg: "",
+   expiredToken: false,
 }
 
-export const loginThunk = createAsyncThunk(action.LOGIN_DASHBOARD, async (dataLogin, thunkAPI) => {
+export const loginThunk = createAsyncThunk(action.AUTH_LOGIN, async (dataLogin: any, thunkAPI) => {
    try {
       const response = await apiLogin(dataLogin);
       return response.data;
    } catch (error: any) {
-      console.log(error)
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data.message);
+   }
+});
+
+export const refreshTokenThunk = createAsyncThunk(action.AUTH_REGRESH_TOKEN, async (refreshToken: any, thunkAPI) => {
+   try {
+      const response = await apiRefreshToken(refreshToken);
+      return response.data;
+   } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
    }
 })
 
@@ -29,10 +39,21 @@ export const authSlice = createSlice({
    extraReducers: (builder) => {
       // login
       builder.addCase(loginThunk.fulfilled, (state, action) => {
-         console.log('ok')
+         state.isLoggedIn = true;
+         state.token = action.payload.token;
+         state.refreshToken = action.payload.refreshToken;
       });
-      builder.addCase(loginThunk.rejected, (state, action) => {
-         console.log('fail')
+      builder.addCase(loginThunk.rejected, (state, action: any) => {
+         state.msg = action.payload;
+         state.updateError = !state.updateError;
+      });
+      // refresh token
+      builder.addCase(refreshTokenThunk.fulfilled, (state, action) => {
+         state.token = action.payload.data;
+         state.isLoggedIn = true
+      });
+      builder.addCase(refreshTokenThunk.rejected, (state, action) => {
+         state.expiredToken = true;
       })
    }
 });

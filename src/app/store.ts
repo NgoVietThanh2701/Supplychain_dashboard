@@ -4,14 +4,16 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import thunk from "redux-thunk";
+import userReducer from '../features/userSlice';
 
 const rootReducer = combineReducers({
    auth: persistReducer({
       storage,
       stateReconciler: autoMergeLevel2,
       key: 'auth',
-      whitelist: ['isLoggedIn', 'token', 'refresh_token']
+      whitelist: ['isLoggedIn', 'token', 'refreshToken']
    }, authReducer as any),
+   user: userReducer
 });
 
 export const store = configureStore({

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import InputForm from '../../components/InputForm';
+import React, { useState, useEffect } from 'react';
+import InputForm from '../../components/Public/InputForm';
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { RiGoogleFill } from "react-icons/ri";
@@ -7,7 +7,10 @@ import { useParams } from 'react-router-dom';
 import validate from '../../utils/function/validateField';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginThunk } from '../../features/authSlice';
-import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { useNavigate } from 'react-router-dom';
+import roles from '../../utils/data/roles';
+import path from '../../utils/data/path';
+import Swal from 'sweetalert2';
 
 const loginImg = require('../../utils/images/login.jpg');
 
@@ -15,6 +18,8 @@ const Login = () => {
 
    const { role } = useParams();
    const dispatch = useDispatch<any>();
+   const navigate = useNavigate();
+   const { isLoggedIn, msg, updateError } = useSelector((state: any) => state.auth);
 
    const [invalidFields, setInvalidFields] = useState([])
    const [payload, setPayload] = useState({
@@ -22,7 +27,24 @@ const Login = () => {
       password: '',
       role: role
    });
-   setPayload((prev: any) => ({ ...prev, role: role }));
+
+   useEffect(() => {
+      setPayload((prev: any) => ({ ...prev, role: role }));
+   }, []);
+
+   useEffect(() => {
+      msg && Swal.fire('Đăng nhập thất bại!', msg, 'error');
+   }, [updateError, msg])
+
+   /* when isLoggedIn changed => navigate home */
+   useEffect(() => {
+      if (role === roles[roles.customer] && isLoggedIn) {
+         navigate('/')
+      } else if (isLoggedIn && (role === roles[roles.farmer] || role === roles[roles.deliveryhub] || role == roles[roles.thirdparty] ||
+         role === roles[roles.admin])) {
+         navigate(`${path.DASHBOARD}`);
+      }
+   }, [navigate, isLoggedIn])
 
    const handleSubmit = async () => {
       let invalids = validate(payload, setInvalidFields);

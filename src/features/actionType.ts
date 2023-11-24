@@ -1,7 +1,7 @@
 const action = {
-   REGISTER: 'auth/register',
-   LOGIN: 'auth/login',
-   LOGIN_DASHBOARD: 'auth/login-dashboard'
+   AUTH_LOGIN: 'auth/login',
+   AUTH_REGRESH_TOKEN: 'auth/refresh-token',
+   USER_GET_CURRENT: 'user/get-current',
 }
 
 export default action;

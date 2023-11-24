@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import InputForm from "../../components/InputForm";
+import InputForm from "../../components/Public/InputForm";
 import { useParams } from 'react-router-dom';
 import roles from '../../utils/data/roles';
 import validate from '../../utils/function/validateField';
-import { apiRegister } from '../../services/authServicer';
+import { apiRegister } from '../../services/authServices';
 import { ethers } from 'ethers'
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -45,7 +45,7 @@ const Register = () => {
             const response = await apiRegister(payload);
             Swal.fire({
                title: "Đăng ký thành công!",
-               text: response.message,
+               text: response.data.message,
                icon: "success"
             });
             navigate(`./${payload.email}/verify-otp`);

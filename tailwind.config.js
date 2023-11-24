@@ -17,7 +17,7 @@ module.exports = {
             'light-gray': '#F7F7F7',
             'half-transparent': 'rgba(0, 0, 0, 0.5)',
             'bg-blue': '#3B71CA',
-            'bg-green': '#008848'
+            'bg-green': '#209E2E',
          },
          borderWidth: {
             1: '1px',
@@ -28,9 +28,14 @@ module.exports = {
          textColor: {
             primary: '#262626', // back
             primary2: '#333', // low back 
-            green: '#008848',
-            666: '#666'
+            green: '#209E2E',
+            666: '#666',
+            333: '#333333' // web user
          },
+         backgroundImage: {
+            'background-slide': "url('./utils/images/background.png')",
+            'background-shop': "url('./utils/images/bg-shop.jpg')"
+         }
       },
    },
    plugins: [],
