@@ -34,7 +34,7 @@ export const ContextProvider = ({ children }: Props) => {
 
    const [activeMenu, setActiveMenu] = useState(true);
    const [screenSize, setScreenSize] = useState(0);
-   const [currentColor, setCurrentColor] = useState('#03C9D7');
+   const [currentColor, setCurrentColor] = useState('#1A97F5');
    const [themeSettings, setThemeSettings] = useState(false);
 
    const setColor = (color: any) => {

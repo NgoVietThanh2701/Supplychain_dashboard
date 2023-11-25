@@ -1,0 +1,907 @@
+[
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_admin",
+            "type": "address"
+         },
+         {
+            "internalType": "contract IERC20",
+            "name": "_token",
+            "type": "address"
+         }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "Harvested",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "PurchasedByCustomer",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "PurchasedByThirdParty",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "ReceivedByCustomer",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "ReceivedByDeliveryHub",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "ReceivedByThirdParty",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "ShippedByDeliveryHub",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "ShippedByFarmer",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "ShippedByThirdParty",
+      "type": "event"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "SoldByThirdParty",
+      "type": "event"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "addCustomer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "addDeliveryHub",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "addFarmer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "addThirdParty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+         {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "string",
+            "name": "_code",
+            "type": "string"
+         }
+      ],
+      "name": "checkProductCode",
+      "outputs": [
+         {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "string",
+            "name": "_code",
+            "type": "string"
+         }
+      ],
+      "name": "getProductByCode",
+      "outputs": [
+         {
+            "components": [
+               {
+                  "internalType": "uint256",
+                  "name": "uid",
+                  "type": "uint256"
+               },
+               {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+               },
+               {
+                  "internalType": "enum Structure.State",
+                  "name": "productState",
+                  "type": "uint8"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "address",
+                        "name": "farmer",
+                        "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "longitude",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "latitude",
+                        "type": "string"
+                     }
+                  ],
+                  "internalType": "struct Structure.FarmerDetails",
+                  "name": "farmerDetails",
+                  "type": "tuple"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "address",
+                        "name": "thirdParty",
+                        "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "longitude",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "latitude",
+                        "type": "string"
+                     }
+                  ],
+                  "internalType": "struct Structure.ThirdPartyDetails",
+                  "name": "thirdPartyDetails",
+                  "type": "tuple"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "address",
+                        "name": "deliveryHub",
+                        "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "longitude",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "latitude",
+                        "type": "string"
+                     }
+                  ],
+                  "internalType": "struct Structure.DeliveryHubDetails",
+                  "name": "deliveryHubDetails",
+                  "type": "tuple"
+               },
+               {
+                  "internalType": "address",
+                  "name": "customer",
+                  "type": "address"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "code",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "priceThirdParty",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "feeShip",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "category",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string[]",
+                        "name": "images",
+                        "type": "string[]"
+                     },
+                     {
+                        "internalType": "string[]",
+                        "name": "imagesThirdParty",
+                        "type": "string[]"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "quantity",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "temp",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "uint32",
+                        "name": "humidity",
+                        "type": "uint32"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "date",
+                        "type": "uint256"
+                     }
+                  ],
+                  "internalType": "struct Structure.ProductDetails",
+                  "name": "productDetails",
+                  "type": "tuple"
+               }
+            ],
+            "internalType": "struct Structure.Product",
+            "name": "",
+            "type": "tuple"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [],
+      "name": "getProductCount",
+      "outputs": [
+         {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "getProductState",
+      "outputs": [
+         {
+            "internalType": "enum Structure.State",
+            "name": "",
+            "type": "uint8"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [],
+      "name": "getProducts",
+      "outputs": [
+         {
+            "components": [
+               {
+                  "internalType": "uint256",
+                  "name": "uid",
+                  "type": "uint256"
+               },
+               {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+               },
+               {
+                  "internalType": "enum Structure.State",
+                  "name": "productState",
+                  "type": "uint8"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "address",
+                        "name": "farmer",
+                        "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "longitude",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "latitude",
+                        "type": "string"
+                     }
+                  ],
+                  "internalType": "struct Structure.FarmerDetails",
+                  "name": "farmerDetails",
+                  "type": "tuple"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "address",
+                        "name": "thirdParty",
+                        "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "longitude",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "latitude",
+                        "type": "string"
+                     }
+                  ],
+                  "internalType": "struct Structure.ThirdPartyDetails",
+                  "name": "thirdPartyDetails",
+                  "type": "tuple"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "address",
+                        "name": "deliveryHub",
+                        "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "longitude",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "latitude",
+                        "type": "string"
+                     }
+                  ],
+                  "internalType": "struct Structure.DeliveryHubDetails",
+                  "name": "deliveryHubDetails",
+                  "type": "tuple"
+               },
+               {
+                  "internalType": "address",
+                  "name": "customer",
+                  "type": "address"
+               },
+               {
+                  "components": [
+                     {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "code",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "priceThirdParty",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "feeShip",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "category",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string[]",
+                        "name": "images",
+                        "type": "string[]"
+                     },
+                     {
+                        "internalType": "string[]",
+                        "name": "imagesThirdParty",
+                        "type": "string[]"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "quantity",
+                        "type": "uint256"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "temp",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "uint32",
+                        "name": "humidity",
+                        "type": "uint32"
+                     },
+                     {
+                        "internalType": "uint256",
+                        "name": "date",
+                        "type": "uint256"
+                     }
+                  ],
+                  "internalType": "struct Structure.ProductDetails",
+                  "name": "productDetails",
+                  "type": "tuple"
+               }
+            ],
+            "internalType": "struct Structure.Product[]",
+            "name": "",
+            "type": "tuple[]"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "string",
+            "name": "_name",
+            "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_code",
+            "type": "string"
+         },
+         {
+            "internalType": "uint256",
+            "name": "_price",
+            "type": "uint256"
+         },
+         {
+            "internalType": "string",
+            "name": "_category",
+            "type": "string"
+         },
+         {
+            "internalType": "string[]",
+            "name": "_images",
+            "type": "string[]"
+         },
+         {
+            "internalType": "string",
+            "name": "_description",
+            "type": "string"
+         },
+         {
+            "internalType": "uint256",
+            "name": "_quantity",
+            "type": "uint256"
+         },
+         {
+            "internalType": "string",
+            "name": "_longitude",
+            "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_latitude",
+            "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_temp",
+            "type": "string"
+         },
+         {
+            "internalType": "uint32",
+            "name": "_humidity",
+            "type": "uint32"
+         }
+      ],
+      "name": "harvestedProduct",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "isCustomer",
+      "outputs": [
+         {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "isDeliveryHub",
+      "outputs": [
+         {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "isFarmer",
+      "outputs": [
+         {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "_account",
+            "type": "address"
+         }
+      ],
+      "name": "isThirdParty",
+      "outputs": [
+         {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         },
+         {
+            "internalType": "uint256",
+            "name": "_feeShip",
+            "type": "uint256"
+         }
+      ],
+      "name": "purchaseByCustomer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "purchaseByThirdParty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "receiveByCustomer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         },
+         {
+            "internalType": "string",
+            "name": "_longitude",
+            "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_latitude",
+            "type": "string"
+         }
+      ],
+      "name": "receiveByDeliveryHub",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         },
+         {
+            "internalType": "string",
+            "name": "_longitude",
+            "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_latitude",
+            "type": "string"
+         }
+      ],
+      "name": "receiveByThirdParty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         },
+         {
+            "internalType": "string[]",
+            "name": "_images",
+            "type": "string[]"
+         },
+         {
+            "internalType": "uint256",
+            "name": "_price",
+            "type": "uint256"
+         }
+      ],
+      "name": "sellByThirdParty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "shipByDeliveryHub",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "shipByFarmer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_uid",
+            "type": "uint256"
+         }
+      ],
+      "name": "shipByThirdParty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   }
+]

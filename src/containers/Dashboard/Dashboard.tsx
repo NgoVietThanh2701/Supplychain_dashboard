@@ -7,45 +7,44 @@ import SideBar from '../../components/Dashboard/SideBar';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useEffect } from 'react';
-import { resetAuth } from '../../features/authSlice';
+import { useEffect, useCallback } from 'react';
 import { resetCurrentUser } from '../../features/userSlice';
 import roles from '../../utils/data/roles';
+import { refreshTokenThunk, resetAuth } from '../../features/authSlice';
+import checkTokenExpired from '../../utils/function/checkTokenExpired';
 
 const Dashboard = () => {
 
-   const { isLoggedIn, expiredToken } = useSelector((state: any) => state.auth);
+   const { isLoggedIn } = useSelector((state: any) => state.auth);
    const { currentUser } = useSelector((state: any) => state.user);
+   const { activeMenu, themeSettings, setThemeSettings, currentColor } = useStateContext();
+   const { token, refreshToken } = useSelector((state: any) => state.auth);
 
    const navigate = useNavigate();
-   const dispatch = useDispatch();
+   const dispatch = useDispatch<any>();
 
+   // when user no login and login with role customer => navigate web user
    useEffect(() => {
-      if (!isLoggedIn) {
+      if (!isLoggedIn || currentUser?.role === roles[roles.customer]) {
          navigate('/')
       }
-   }, [isLoggedIn, navigate]);
-
-   useEffect(() => {
-      if (currentUser === roles[roles.customer]) {
-         navigate('/')
-      }
-   }, [currentUser, navigate])
+   }, [isLoggedIn, navigate, currentUser]);
 
    const goLogout = useCallback(() => {
       dispatch(resetAuth());
       dispatch(resetCurrentUser());
       navigate('/');
-   }, [dispatch, navigate])
+   }, [dispatch, navigate]);
 
    useEffect(() => {
-      if (expiredToken) {
-         goLogout();
+      if (token) {
+         if (checkTokenExpired(refreshToken)) {
+            goLogout();
+         } else if (checkTokenExpired(token)) {
+            dispatch(refreshTokenThunk(refreshToken));
+         }
       }
-   }, [expiredToken, goLogout])
-
-
-   const { activeMenu, themeSettings, setThemeSettings, currentColor } = useStateContext();
+   }, [dispatch, goLogout, refreshToken, token]);
 
    return (
       <div className='flex relative'>

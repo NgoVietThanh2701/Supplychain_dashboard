@@ -3,7 +3,7 @@ import action from "./actionType";
 import { apiGetCurrentUser } from "../services/userServices";
 
 const initStateUser = {
-   currentUser: {},
+   currentUser: null,
    msg: ''
 }
 

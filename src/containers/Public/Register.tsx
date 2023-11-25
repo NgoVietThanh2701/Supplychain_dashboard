@@ -7,9 +7,9 @@ import { apiRegister } from '../../services/authServices';
 import { ethers } from 'ethers'
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
+import Header from '../../components/Public/Header';
+import Footer from '../../components/Public/Footer';
 
 declare var window: any;
 const loginImg = require('../../utils/images/login.jpg');
@@ -71,6 +71,7 @@ const Register = () => {
 
    return (
       <div className='w-full flex flex-col items-center justify-center bg-main-bg'>
+         <Header />
          <div className='bg-white w-[900px] mt-16 mb-40 p-[30px] rounded-md border-color border-1'>
             <h3 className='ml-32 font-semibold text-primary2 text-4xl mb-3'>Đăng ký</h3>
             <div className='flex mx-5'>
@@ -130,7 +131,8 @@ const Register = () => {
                </div>
             </div>
          </div>
-         <ToastContainer />
+         <div className='w-full border-t-1 border-color' />
+         <Footer />
       </div>
    )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode } from 'react';
+import React, { useEffect, ReactNode, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { FiShoppingCart } from 'react-icons/fi';
 import { BsChatLeft } from 'react-icons/bs';
@@ -7,8 +7,9 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { useStateContext } from '../../contexts/ContextProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshTokenThunk } from '../../features/authSlice';
 import { getCurrentUser } from '../../features/userSlice';
+import { showShortAddress } from '../../utils/function/format';
+import CrowdSaleContract from '../../contracts/CrowdSaleContract';
 
 const avatar = require("../../utils/images/avatar.png");
 
@@ -32,7 +33,6 @@ const NavButton: React.FC<NavButtonProps> = ({ title, customFunc, icon, color, d
 const Navbar = () => {
 
    const { activeMenu, setActiveMenu, screenSize, setScreenSize, currentColor } = useStateContext();
-
    const { currentUser } = useSelector((state: any) => state.user);
 
    // get size screen width when open website
@@ -52,29 +52,19 @@ const Navbar = () => {
       }
    }, [screenSize, setActiveMenu]);
 
-   // ------------------
-   const dispatch = useDispatch<any>();
-   const { isLoggedIn, token, refreshToken } = useSelector((state: any) => state.auth);
+   const [rateBNB, setRateBNB] = useState(0);
 
-   // compare expired live of token and dispatch get new token access
-   console.log('token', token);
-   console.log('refresh token', refreshToken);
-   if (token && token !== null) { // no token. require user login
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      const expirationTime = decodedToken.exp * 1000; // Đổi từ giây sang mili-giây
-      const currentTime = Date.now();
-      if (currentTime >= expirationTime) {
-         console.log('dispatch token refresh!')
-         dispatch(refreshTokenThunk(refreshToken));
-      }
-
+   const getRate = async () => {
+      const crowdContract = new CrowdSaleContract();
+      const bnbRate = await crowdContract.getBnbRate();
+      setRateBNB(bnbRate);
    }
 
    useEffect(() => {
-      setTimeout(() => {
-         isLoggedIn && dispatch(getCurrentUser());
-      }, 700)
-   }, [isLoggedIn, dispatch]);
+      getRate();
+   }, [getRate]);
+
+   console.log(rateBNB)
 
    return (
       <div className='flex justify-between px-2 py-1.5 md:mx-4 relative'>
@@ -87,8 +77,9 @@ const Navbar = () => {
                <div className='flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg' onClick={() => { }}>
                   <img className='rounded-full w-8 h-8' src={avatar} alt="" />
                   <p>
-                     <span className='text-gray-400 text-14'>Hi, </span> {''}
-                     <span className='text-gray-400 font-bold ml-1 text-14'>{currentUser?.name}</span>
+                     <span className='text-gray-666 text-14'>Hi, </span> {''}
+                     <span className='text-gray-500 font-semibold ml-1 text-14'>{currentUser?.name}</span>
+                     <span className='text-333 text-base'> ({showShortAddress(currentUser?.addressWallet)}) </span>
                   </p>
                   <MdKeyboardArrowDown className='text-gray-400 text-14' />
                </div>

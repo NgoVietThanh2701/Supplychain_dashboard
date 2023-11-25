@@ -9,7 +9,6 @@ const initState = {
    refresh_expired: false,
    updateError: false,
    msg: "",
-   expiredToken: false,
 }
 
 export const loginThunk = createAsyncThunk(action.AUTH_LOGIN, async (dataLogin: any, thunkAPI) => {
@@ -53,7 +52,7 @@ export const authSlice = createSlice({
          state.isLoggedIn = true
       });
       builder.addCase(refreshTokenThunk.rejected, (state, action) => {
-         state.expiredToken = true;
+         console.log('reject at refresh token slice')
       })
    }
 });
