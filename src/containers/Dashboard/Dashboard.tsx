@@ -7,21 +7,27 @@ import SideBar from '../../components/Dashboard/SideBar';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useCallback } from 'react';
-import { resetCurrentUser } from '../../features/userSlice';
+import { useEffect, useCallback, useState } from 'react';
+import { getCurrentUser, resetCurrentUser } from '../../features/userSlice';
 import roles from '../../utils/data/roles';
-import { refreshTokenThunk, resetAuth } from '../../features/authSlice';
+import { resetAuth } from '../../features/authSlice';
 import checkTokenExpired from '../../utils/function/checkTokenExpired';
+import { ethers } from 'ethers';
+import Swal from 'sweetalert2';
+
+declare var window: any;
 
 const Dashboard = () => {
 
-   const { isLoggedIn } = useSelector((state: any) => state.auth);
+   const { isLoggedIn, token } = useSelector((state: any) => state.auth);
    const { currentUser } = useSelector((state: any) => state.user);
    const { activeMenu, themeSettings, setThemeSettings, currentColor } = useStateContext();
-   const { token, refreshToken } = useSelector((state: any) => state.auth);
 
    const navigate = useNavigate();
    const dispatch = useDispatch<any>();
+
+   const [web3Provider, setWeb3Provider] = useState<any>();
+   const [address, setAddress] = useState('');
 
    // when user no login and login with role customer => navigate web user
    useEffect(() => {
@@ -33,18 +39,61 @@ const Dashboard = () => {
    const goLogout = useCallback(() => {
       dispatch(resetAuth());
       dispatch(resetCurrentUser());
+      localStorage.removeItem('supplychain_address');
       navigate('/');
    }, [dispatch, navigate]);
 
    useEffect(() => {
       if (token) {
-         if (checkTokenExpired(refreshToken)) {
-            goLogout();
-         } else if (checkTokenExpired(token)) {
-            dispatch(refreshTokenThunk(refreshToken));
+         checkTokenExpired(token) && goLogout();
+      }
+   }, [token]);
+
+   const onConnectMetamask = async () => {
+      if (window.ethereum) {
+         try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum, undefined);
+            const accounts = await provider.send("eth_requestAccounts", []);
+            if (accounts.length > 0) {
+               const signer = provider.getSigner();
+               const address = await signer.getAddress();
+               if (address === currentUser?.addressWallet) {
+                  // Lưu thông tin vào localStorage
+                  localStorage.setItem("supplychain_address", address);
+                  setWeb3Provider(provider);
+                  setAddress(address)
+               } else {
+                  Swal.fire('Opps', 'Vui lòng kết nối với tài khoản đã đăng ký trước đó', 'error');
+                  setAddress('');
+                  setWeb3Provider(null);
+                  localStorage.removeItem('supplychain_address');
+               }
+            } else {
+               Swal.fire('Opps', 'Không tài khoản nào được chọn', 'error');
+            }
+         } catch (error) {
+            console.log(error);
          }
       }
-   }, [dispatch, goLogout, refreshToken, token]);
+   }
+
+   // get address from localStorage.
+   useEffect(() => {
+      const storedAddress = localStorage.getItem("supplychain_address");
+      if (storedAddress) {
+         setAddress(storedAddress);
+         const provider = new ethers.providers.Web3Provider(window.ethereum, undefined);
+         setWeb3Provider(provider);
+      }
+   }, []);
+
+   useEffect(() => {
+      if (isLoggedIn) {
+         setTimeout(() => {
+            dispatch(getCurrentUser());
+         }, 500)
+      }
+   }, [dispatch, isLoggedIn])
 
    return (
       <div className='flex relative'>
@@ -68,12 +117,12 @@ const Dashboard = () => {
 
          <div className={`bg-main-bg min-h-screen w-full ${activeMenu ? 'md:ml-72' : 'flex-2'}`}>
             <div className='fixed md:static bg-main-bg navbar w-full'>
-               <Navbar />
+               <Navbar address={address} onConnectMetamask={onConnectMetamask} />
             </div>
             {themeSettings && <ThemeSettings />}
             <div>
                {/* home */}
-               <Outlet />
+               <Outlet context={web3Provider} />
             </div>
          </div>
       </div>

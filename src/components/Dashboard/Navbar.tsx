@@ -7,11 +7,13 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { useStateContext } from '../../contexts/ContextProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentUser } from '../../features/userSlice';
 import { showShortAddress } from '../../utils/function/format';
 import CrowdSaleContract from '../../contracts/CrowdSaleContract';
+import Swal from 'sweetalert2';
+import { ethers } from 'ethers';
 
 const avatar = require("../../utils/images/avatar.png");
+declare var window: any;
 
 interface NavButtonProps {
    title: string,
@@ -30,7 +32,7 @@ const NavButton: React.FC<NavButtonProps> = ({ title, customFunc, icon, color, d
    </TooltipComponent>
 )
 
-const Navbar = () => {
+const Navbar = ({ address, onConnectMetamask }: any) => {
 
    const { activeMenu, setActiveMenu, screenSize, setScreenSize, currentColor } = useStateContext();
    const { currentUser } = useSelector((state: any) => state.user);
@@ -52,23 +54,16 @@ const Navbar = () => {
       }
    }, [screenSize, setActiveMenu]);
 
-   const [rateBNB, setRateBNB] = useState(0);
-
-   const getRate = async () => {
-      const crowdContract = new CrowdSaleContract();
-      const bnbRate = await crowdContract.getBnbRate();
-      setRateBNB(bnbRate);
-   }
-
-   useEffect(() => {
-      getRate();
-   }, [getRate]);
-
-   console.log(rateBNB)
 
    return (
-      <div className='flex justify-between px-2 py-1.5 md:mx-4 relative'>
-         <NavButton title='Menu' customFunc={() => setActiveMenu(!activeMenu)} color={currentColor} icon={<AiOutlineMenu />} />
+      <div className='flex justify-between px-2 pt-2 md:mx-4 relative shadow-sm'>
+         <div className='flex items-center'>
+            <NavButton title='Menu' customFunc={() => setActiveMenu(!activeMenu)} color={currentColor} icon={<AiOutlineMenu />} />
+            {address ? <p className='text-green'>Kết nối ví thành công !</p> :
+               <button className='text-[#C82032]'
+                  onClick={onConnectMetamask}>Vui lòng kết nối ví</button>
+            }
+         </div>
          <div className='flex'>
             <NavButton title='Cart' customFunc={() => { }} color={currentColor} icon={<FiShoppingCart />} />
             <NavButton title='Chat' dotColor='#03C9D7' customFunc={() => { }} color={currentColor} icon={<BsChatLeft />} />
@@ -79,7 +74,7 @@ const Navbar = () => {
                   <p>
                      <span className='text-gray-666 text-14'>Hi, </span> {''}
                      <span className='text-gray-500 font-semibold ml-1 text-14'>{currentUser?.name}</span>
-                     <span className='text-333 text-base'> ({showShortAddress(currentUser?.addressWallet)}) </span>
+                     <span className='text-333 text-base'> ({showShortAddress(currentUser?.addressWallet, 4)}) </span>
                   </p>
                   <MdKeyboardArrowDown className='text-gray-400 text-14' />
                </div>

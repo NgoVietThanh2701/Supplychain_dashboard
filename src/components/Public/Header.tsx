@@ -8,19 +8,16 @@ import { TbLayoutDashboard } from "react-icons/tb";
 import path from '../../utils/data/path';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshTokenThunk, resetAuth } from '../../features/authSlice';
-import { resetCurrentUser } from '../../features/userSlice';
+import { resetAuth } from '../../features/authSlice';
+import { getCurrentUser, resetCurrentUser } from '../../features/userSlice';
 import roles from '../../utils/data/roles';
 import checkTokenExpired from '../../utils/function/checkTokenExpired';
 import { showShortAddress } from '../../utils/function/format';
-import ModalSaleToken from '../Dashboard/ModalSaleToken';
 
 const Header = () => {
 
-   const { refreshToken, token, isLoggedIn } = useSelector((state: any) => state.auth);
+   const { token, isLoggedIn } = useSelector((state: any) => state.auth);
    const { currentUser } = useSelector((state: any) => state.user);
-
-   const [isOpenModal, setIsOpenModal] = useState(false);
 
    const dispatch = useDispatch<any>();
    const navigate = useNavigate();
@@ -33,28 +30,26 @@ const Header = () => {
 
    useEffect(() => {
       if (token) {
-         if (checkTokenExpired(refreshToken)) {
-            goLogout();
-         } else if (checkTokenExpired(token)) {
-            dispatch(refreshTokenThunk(refreshToken));
-         }
+         checkTokenExpired(token) && goLogout();
       }
-   }, [dispatch, goLogout, refreshToken, token]);
+   }, [token]);
 
    useEffect(() => {
       if (isLoggedIn && ((currentUser?.role === roles[roles.admin]) || currentUser?.role === roles[roles.farmer] || currentUser?.role === roles[roles.thirdparty] || currentUser?.role === roles[roles.deliveryhub])) {
          navigate(`${path.DASHBOARD}`);
       }
-   }, [currentUser?.role, isLoggedIn, navigate])
+   }, [currentUser?.role, isLoggedIn, navigate]);
 
-   // modal
-   const handleModal = () => {
-      setIsOpenModal(true);
-   }
+   useEffect(() => {
+      if (isLoggedIn) {
+         setTimeout(() => {
+            dispatch(getCurrentUser());
+         }, 500)
+      }
+   }, [dispatch, isLoggedIn])
 
    return (
       <div className='w-5/6 h-[80px] bg-white flex items-center justify-between px-5 rounded-lg'>
-         {isOpenModal && <ModalSaleToken setIsOpenModal={setIsOpenModal} />}
          <div>
             <Link to='/' className=' flex items-center'>
                <LiaGripfire size={38} className='text-green' />
@@ -65,7 +60,9 @@ const Header = () => {
             <NavLink to='/'>
                Trang chủ
             </NavLink>
-            <button onClick={handleModal}>modal</button>
+            <NavLink to={path.SHOP}>
+               Cửa hàng
+            </NavLink>
             {!currentUser &&
                (<div className='group relative cursor-pointer'>
                   <div className='flex items-center justify-center gap-[2px]'>
@@ -81,9 +78,6 @@ const Header = () => {
                   <div className=" z-10 h-7 w-52 absolute top-full left-[-15%]"></div>
                </div>
                )}
-            <NavLink to={path.SHOP}>
-               Cửa hàng
-            </NavLink>
             {!currentUser &&
                (<div className='group relative cursor-pointer'>
                   <div className='flex items-center justify-center gap-[2px]'>
@@ -94,20 +88,20 @@ const Header = () => {
                      <Link to={`/register/${roles[roles.farmer]}`} className='block py-2 hover:text-green'>Nông dân</Link>
                      <Link to={`/register/${roles[roles.thirdparty]}`} className='block py-2 hover:text-green'>Môi giới</Link>
                      <Link to={`/register/${roles[roles.deliveryhub]}`} className='block py-2 hover:text-green'>Vận chuyển</Link>
-                     <Link to={`/register/${roles[roles.admin]}`} className='block py-2 hover:text-green'>Admin</Link>
                   </ul>
                   <div className=" z-10 h-7 w-52 absolute top-full left-0"></div>
                </div>
                )}
-            {currentUser &&
-               <button onClick={goLogout}>Đăng xuất</button>}
+            <NavLink to={path.BUY_TOKEN}>Mua Token</NavLink>
          </ul>
          <div className='flex items-center gap-2'>
             {currentUser &&
                <div className=' border-gray-300 rounded-md p-2 text-333'>
-                  {currentUser?.name} ({showShortAddress(currentUser?.addressWallet)}) <span className='text-green font-medium'>2,6 AGT</span>
+                  {currentUser?.name} ({showShortAddress(currentUser?.addressWallet, 4)}) <span className='text-green font-medium'>2,6 AGT</span>
                </div>
             }
+            {currentUser &&
+               <button onClick={goLogout}>Đăng xuất</button>}
             <div className='border-1 border-gray-300 rounded-md p-2 hover:bg-bg-green text-666 hover:text-white'>
                <IoSearchSharp size={18} />
             </div>
@@ -115,9 +109,7 @@ const Header = () => {
                <BsCart size={18} />
                <span className='absolute top-0 right-0 bg-bg-green text-white w-4 text-center rounded-full text-xs'>2</span>
             </div>
-            <div className='border-1 border-gray-300 rounded-md p-2 hover:bg-bg-green text-666 hover:text-white'>
-               <TbLayoutDashboard size={18} />
-            </div>
+
          </div>
       </div>
    )

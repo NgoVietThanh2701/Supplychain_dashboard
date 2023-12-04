@@ -2,15 +2,17 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LiaGripfire } from "react-icons/lia";
 import { MdOutlineCancel } from 'react-icons/md';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import sideBar from '../../utils/data/sideBar';
+import { sideBarAdmin, sideBarFarmer } from '../../utils/data/sideBar';
 import { useStateContext } from '../../contexts/ContextProvider';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetAuth } from '../../features/authSlice';
 import { resetCurrentUser } from '../../features/userSlice';
+import roles from '../../utils/data/roles';
 
 const SideBar = () => {
 
    const { activeMenu, setActiveMenu, screenSize, currentColor } = useStateContext();
+   const { currentUser } = useSelector((state: any) => state.user);
 
    const dispatch = useDispatch();
    const navigate = useNavigate();
@@ -24,6 +26,7 @@ const SideBar = () => {
    const logOut = async () => {
       dispatch(resetAuth());
       dispatch(resetCurrentUser());
+      localStorage.removeItem('supplychain_address');
       navigate('/');
    }
 
@@ -46,20 +49,38 @@ const SideBar = () => {
                   </TooltipComponent>
                </div>
                <div className='mt-10'>
-                  {sideBar.map((item) => (
-                     <div key={item.title}>
-                        <p className='text-gray-400 m-3 mt-4 uppercase'> {item.title}</p>
-                        {item.links.map((link) => (
-                           <NavLink to={`${link.path}`} key={link.path}
-                              style={({ isActive }) => ({ backgroundColor: isActive ? currentColor : '' })}
-                              onClick={handleCloseSidebar} className={({ isActive }) => isActive ? activeLink : normalLink}>{link.icon}
-                              <span className='capitalize'>{link.name}</span>
-                           </NavLink>
+                  {currentUser?.role === roles[roles.admin] &&
+                     <>
+                        {sideBarAdmin.map((item) => (
+                           <div key={item.title}>
+                              <p className='text-gray-400 m-3 mt-4 uppercase'> {item.title}</p>
+                              {item.links.map((link) => (
+                                 <NavLink to={`${link.path}`} key={link.path}
+                                    style={({ isActive }) => ({ backgroundColor: isActive ? currentColor : '' })}
+                                    onClick={handleCloseSidebar} className={({ isActive }) => isActive ? activeLink : normalLink}>{link.icon}
+                                    <span className='capitalize'>{link.name}</span>
+                                 </NavLink>
+                              ))}
+                           </div>
                         ))}
-                     </div>
-                  ))}
+                     </>}
+                  {currentUser?.role === roles[roles.farmer] &&
+                     <>
+                        {sideBarFarmer.map((item) => (
+                           <div key={item.title}>
+                              <p className='text-gray-400 m-3 mt-4 uppercase'> {item.title}</p>
+                              {item.links.map((link) => (
+                                 <NavLink to={`${link.path}`} key={link.path}
+                                    style={({ isActive }) => ({ backgroundColor: isActive ? currentColor : '' })}
+                                    onClick={handleCloseSidebar} className={({ isActive }) => isActive ? activeLink : normalLink}>{link.icon}
+                                    <span className='capitalize'>{link.name}</span>
+                                 </NavLink>
+                              ))}
+                           </div>
+                        ))}
+                     </>}
                </div>
-               <button className={`m-3 mt-4 w-full font-medium ${normalLink}`} onClick={logOut}> Logout</button>
+               <button className={`mt-4 mx-3 font-medium ${normalLink}`} onClick={logOut}> Logout</button>
             </>}
       </div>
    )

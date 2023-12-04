@@ -8,31 +8,30 @@ import Register from './containers/Public/Register';
 import OtpPage from './containers/Public/OtpPage';
 import Shop from './containers/Public/Shop';
 import SingleProduct from './containers/Public/SingleProduct';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getCurrentUser } from './features/userSlice';
+import BuyToken from './containers/BuyToken';
+import RequestUsers from './containers/Dashboard/admin/RequestUsers';
+import Users from './containers/Dashboard/admin/Users';
+import Harvested from './containers/Dashboard/farmer/Harvested';
+import StatisticalAdmin from './containers/Dashboard/admin/StatisticalAdmin';
+import StatisticalFM from './containers/Dashboard/farmer/StatisticalFM';
+import Category from './containers/Dashboard/farmer/Category';
 
 const App = () => {
-
-   const { isLoggedIn } = useSelector((state: any) => state.auth);
-   const dispatch = useDispatch<any>();
-
-   useEffect(() => {
-      if (isLoggedIn) {
-         setTimeout(() => {
-            dispatch(getCurrentUser());
-         }, 500)
-      }
-   }, [dispatch, isLoggedIn])
 
    return (
       <Routes>
          {/* System */}
          <Route path={path.DASHBOARD} element={<Dashboard />}>
-            {/* Outlet */}
+            {/* admin */}
+            <Route path={path.ADMIN_STATISTICAL} element={<StatisticalAdmin />} />
+            <Route path={path.ADMIN_REQUEST} element={<RequestUsers />} />
+            <Route path={path.ADMIN_USERS} element={<Users />} />
+            {/* - farmer */}
+            <Route path={path.FARMER_STATISTICAL} element={<StatisticalFM />} />
+            <Route path={path.FARMER_PRODUCT} element={<Harvested />} />
+            <Route path={path.FARMER_CATEGORY} element={<Category />} />
          </Route>
-         {/* User */}
+         {/* Public */}
          <Route path={path.LOGIN} element={<Login />} />
          <Route path={path.REGISTER} element={<Register />} />
          <Route path={path.VERIFY_OTP} element={<OtpPage />} />
@@ -40,6 +39,7 @@ const App = () => {
          <Route path={path.HOME} element={<Home />} />
          <Route path={path.SHOP} element={<Shop />} />
          <Route path={path.SINGLE_PRODUCT} element={<SingleProduct />} />
+         <Route path={path.BUY_TOKEN} element={<BuyToken />} />
       </Routes>
 
    )

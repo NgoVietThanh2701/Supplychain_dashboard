@@ -18,6 +18,7 @@ module.exports = {
             'half-transparent': 'rgba(0, 0, 0, 0.5)',
             'bg-blue': '#3B71CA',
             'bg-green': '#209E2E',
+            'bg-red': '#E73E33'
          },
          borderWidth: {
             1: '1px',
@@ -30,7 +31,8 @@ module.exports = {
             primary2: '#333', // low back 
             green: '#209E2E',
             666: '#666',
-            333: '#333333' // web user
+            333: '#333333', // web user
+            444: '#444'
          },
          backgroundImage: {
             'background-slide': "url('./utils/images/background.png')",

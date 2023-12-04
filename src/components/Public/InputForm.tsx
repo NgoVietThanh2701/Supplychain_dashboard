@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from 'react'
 
 
-const InputForm = ({ label, value, setValue, keyPayload, invalidFields, setInvalidFields, type }: any) => {
+const InputForm = ({ label, value, setValue, keyPayload, invalidFields, setInvalidFields, type, setErrs }: any) => {
 
    const [isFocused, setIsFocused] = useState(false);
    const [inputValue, setInputValue] = useState('');
@@ -9,6 +9,7 @@ const InputForm = ({ label, value, setValue, keyPayload, invalidFields, setInval
    const handleFocus = () => {
       setIsFocused(true);
       setInvalidFields([]);
+      setErrs && setErrs(false)
    };
 
    const handleBlur = () => {
@@ -22,7 +23,7 @@ const InputForm = ({ label, value, setValue, keyPayload, invalidFields, setInval
    }
 
    return (
-      <div className="relative">
+      <div className="relative w-full">
          <label className={`absolute ${isFocused || inputValue !== '' ? 'text-xs text-666 left-1 top-[-6px]' : 'hidden'} bg-white  text-center px-2 transition-all duration-300`}
             htmlFor={keyPayload}>
             {label}

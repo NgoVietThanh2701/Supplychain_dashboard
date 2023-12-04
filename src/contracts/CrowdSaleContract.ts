@@ -17,10 +17,9 @@ export default class CrowdSaleContract extends BaseInterface {
    }
 
    async buyTokenByBnB(amount: number) {
-      const rate = await this.getBnbRate();
       const tx: TransactionResponse = await this._contract.buyTokenByBNB({
          ...this._option,
-         value: this._parseToEth(amount / rate),
+         value: this._parseToEth(amount),
       });
       return this._handleTransactionResponse(tx);
    }

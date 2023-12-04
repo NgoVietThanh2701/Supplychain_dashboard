@@ -11,7 +11,7 @@ const rootReducer = combineReducers({
       storage,
       stateReconciler: autoMergeLevel2,
       key: 'auth',
-      whitelist: ['isLoggedIn', 'token', 'refreshToken']
+      whitelist: ['isLoggedIn', 'token']
    }, authReducer as any),
    user: userReducer
 });

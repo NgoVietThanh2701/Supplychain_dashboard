@@ -5,13 +5,14 @@ import { IoMdContacts } from 'react-icons/io';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { BsKanban } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
+import path from './path'
 
-const sideBar = [
+export const sideBarAdmin = [
    {
-      title: 'Dashboard',
+      title: 'Tổng quan',
       links: [
          {
-            name: 'Statistical',
+            name: 'Thống kê',
             icon: <FiShoppingBag />,
             path: '/dashboard/statistical'
          }
@@ -21,24 +22,48 @@ const sideBar = [
       title: 'User',
       links: [
          {
-            name: 'customer',
+            name: 'Yêu cầu đăng ký',
             icon: <AiOutlineShoppingCart />,
-            path: '/zz'
+            path: path.ADMIN_REQUEST
          },
          {
-            name: 'employees',
-            icon: <IoMdContacts />,
-            path: '/emply'
-         },
-         {
-            name: 'customers',
+            name: 'Người dùng',
             icon: <RiContactsLine />,
-            path: '/cus'
+            path: path.ADMIN_USERS
          },
       ],
    },
-
-
 ]
 
-export default sideBar
+export const sideBarFarmer = [
+   {
+      title: 'Tổng quan',
+      links: [
+         {
+            name: 'Thống kê',
+            icon: <FiShoppingBag />,
+            path: path.FARMER_STATISTICAL
+         }
+      ]
+   },
+   {
+      title: 'Sản phẩm',
+      links: [
+         {
+            name: 'Sản phẩm',
+            icon: <AiOutlineShoppingCart />,
+            path: path.FARMER_PRODUCT
+         },
+         {
+            name: 'Đơn hàng',
+            icon: <RiContactsLine />,
+            path: path.FARMER_ORDER
+         },
+         {
+            name: 'Danh mục',
+            icon: <RiContactsLine />,
+            path: path.FARMER_CATEGORY
+         },
+      ],
+   },
+]

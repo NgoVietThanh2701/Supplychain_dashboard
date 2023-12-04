@@ -15,9 +15,21 @@ export default class SupplyChainContract extends BaseInterface {
       await this._contract.addFarmer(address, this._option);
    }
 
-   async getAdmin(): Promise<string> {
-      const address: string = (await this._contract.admin()).toString();
-      return address;
+   async addCustomer(address: string) {
+      await this._contract.addCustomer(address, this._option);
+   }
+
+   async addDeliveryHub(address: string) {
+      await this._contract.addDeliveryHub(address, this._option);
+   }
+
+   async addThirdParty(address: string) {
+      await this._contract.addThirdParty(address, this._option);
+   }
+
+   // step 1: famer -> harvested product 
+   async harvestedProduct(name: string, code: string, price: number, category: string, images: string, description: string, quantity: number, longitude: string, latitude: string, temp: string, humidity: number) {
+      await this._contract.harvestedProduct(name, code, price, category, images, description, quantity, longitude, latitude, temp, humidity, this._option)
    }
 
    async getProductByCode(code: string) {
@@ -30,13 +42,9 @@ export default class SupplyChainContract extends BaseInterface {
       return count._toNumber();
    }
 
-   // async getProductState() {
-   //    const productState = await this._contract.getProductState();
-   //    return productState;
-   // }
-
    async getProducts() {
       const products = await this._contract.getProducts();
       return products;
    }
+
 }

@@ -360,14 +360,9 @@
                         "type": "string"
                      },
                      {
-                        "internalType": "string[]",
+                        "internalType": "string",
                         "name": "images",
-                        "type": "string[]"
-                     },
-                     {
-                        "internalType": "string[]",
-                        "name": "imagesThirdParty",
-                        "type": "string[]"
+                        "type": "string"
                      },
                      {
                         "internalType": "string",
@@ -565,14 +560,9 @@
                         "type": "string"
                      },
                      {
-                        "internalType": "string[]",
+                        "internalType": "string",
                         "name": "images",
-                        "type": "string[]"
-                     },
-                     {
-                        "internalType": "string[]",
-                        "name": "imagesThirdParty",
-                        "type": "string[]"
+                        "type": "string"
                      },
                      {
                         "internalType": "string",
@@ -636,9 +626,9 @@
             "type": "string"
          },
          {
-            "internalType": "string[]",
+            "internalType": "string",
             "name": "_images",
-            "type": "string[]"
+            "type": "string"
          },
          {
             "internalType": "string",
@@ -848,11 +838,6 @@
             "internalType": "uint256",
             "name": "_uid",
             "type": "uint256"
-         },
-         {
-            "internalType": "string[]",
-            "name": "_images",
-            "type": "string[]"
          },
          {
             "internalType": "uint256",
