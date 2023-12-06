@@ -36,7 +36,7 @@ const Header = () => {
 
    useEffect(() => {
       if (isLoggedIn && ((currentUser?.role === roles[roles.admin]) || currentUser?.role === roles[roles.farmer] || currentUser?.role === roles[roles.thirdparty] || currentUser?.role === roles[roles.deliveryhub])) {
-         navigate(`${path.DASHBOARD}`);
+         navigate(`${path.DASHBOARD}/${currentUser.role}/statistical`);
       }
    }, [currentUser?.role, isLoggedIn, navigate]);
 

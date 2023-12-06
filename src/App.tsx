@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Dashboard from './containers/Dashboard/Dashboard';
 import path from './utils/data/path';
@@ -15,6 +15,10 @@ import Harvested from './containers/Dashboard/farmer/Harvested';
 import StatisticalAdmin from './containers/Dashboard/admin/StatisticalAdmin';
 import StatisticalFM from './containers/Dashboard/farmer/StatisticalFM';
 import Category from './containers/Dashboard/farmer/Category';
+import OrderFM from './containers/Dashboard/farmer/OrderFM';
+import StatisticalTPT from './containers/Dashboard/thirdParty/StatisticalTPT';
+import ShopProductTPT from './containers/Dashboard/thirdParty/ShopProductTPT';
+import Warehouse from './containers/Dashboard/thirdParty/Warehouse';
 
 const App = () => {
 
@@ -30,6 +34,11 @@ const App = () => {
             <Route path={path.FARMER_STATISTICAL} element={<StatisticalFM />} />
             <Route path={path.FARMER_PRODUCT} element={<Harvested />} />
             <Route path={path.FARMER_CATEGORY} element={<Category />} />
+            <Route path={path.FARMER_ORDER} element={<OrderFM />} />
+            {/* third party */}
+            <Route path={path.THIRDPARTY_STATISTICAL} element={<StatisticalTPT />} />
+            <Route path={path.THIRDPARTY_SHOP} element={<ShopProductTPT />} />
+            <Route path={path.THIRDPARTY_WAREHOUSE} element={<Warehouse />} />
          </Route>
          {/* Public */}
          <Route path={path.LOGIN} element={<Login />} />

@@ -20,8 +20,8 @@ const themeColors = [
       color: '#1E4DB7',
    },
    {
-      color: '#FB9678',
-      name: 'orange-theme',
+      color: '#209E2E',
+      name: 'xanhla-theme',
    },
 ];
 

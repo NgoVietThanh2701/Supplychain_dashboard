@@ -29,6 +29,7 @@ const BuyToken = () => {
    const getRate = async () => {
       const crowdContract = new CrowdSaleContract();
       const _rate = await crowdContract.getBnbRate();
+      console.log(_rate)
       setRate(_rate);
    }
 

@@ -1,3 +1,4 @@
+import { BigNumber, ethers } from 'ethers'
 import moment from 'moment'
 import 'moment/locale/vi'
 
@@ -12,4 +13,12 @@ export const showShortAddress = (address: string, amount: number): string => {
 export const formatTime = (createdAt: any) => {
    moment.locale('vi');
    return moment(createdAt).fromNow()
+}
+
+export const parseToEth = (amount: number) => {
+   return ethers.utils.parseEther(amount.toString());
+}
+
+export const formatToEth = (bigNumber: BigNumber) => {
+   return Number.parseFloat(ethers.utils.formatEther(bigNumber))
 }

@@ -63,7 +63,11 @@ const FormOTP: React.FC<FormOTPProps> = ({ role, email }) => {
             text: response.data.message,
             icon: "success"
          });
-         role === roles[roles.customer] && navigate('/login');
+         if (role === roles[roles.customer]) {
+            navigate('/login');
+         } else {
+            navigate('/');
+         }
       } catch (error: any) {
          console.log(error.message)
          Swal.fire({

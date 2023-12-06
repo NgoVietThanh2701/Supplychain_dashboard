@@ -96,7 +96,7 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             });
             const urlImage = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
             const supplychainContract = new SupplyChainContract(web3Provider);
-            await supplychainContract.harvestedProduct(payload.name, uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
+            await supplychainContract.harvestedProduct(payload.name, uuidv4(), supplychainContract._parseToEth(Number.parseFloat(payload.price)), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
             setTimeout(() => {
                getProducts();
             }, 3000);

@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import Product from './Product';
 
-const itemStyle = 'flex items-center justify-center px-[10px] h-8 border-1 border-gray-300 bg-white hover:bg-gray-100 rounded-sm text-333'
+const itemStyle = 'flex items-center justify-center px-[10px] h-8 border-1 border-gray-300  hover:bg-gray-100 rounded-sm text-333'
 
-const Pagination = ({ itemsPerPage, data }: any) => {
+const Pagination = ({ itemsPerPage, data, Component, getProducts }: any) => {
 
    const [itemOffset, setItemOffset] = useState(0);
    const endOffset = itemOffset + itemsPerPage;
@@ -18,7 +17,7 @@ const Pagination = ({ itemsPerPage, data }: any) => {
 
    return (
       <>
-         <Product dataProduct={currentItems} />
+         <Component dataProduct={currentItems} getProducts={getProducts} />
          <ReactPaginate
             previousLabel='Previous'
             nextLabel='Next'

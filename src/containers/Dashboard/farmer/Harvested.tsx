@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import React, { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom';
 import DataTable from '../../../components/Dashboard/DataTable';
@@ -6,6 +6,8 @@ import HarvestedModal from '../../../components/Dashboard/farmer/HarvestedModal'
 import Swal from 'sweetalert2';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import { formatTime } from '../../../utils/function/format';
+import StateProduct from '../../../utils/data/statesProduct';
+import { formatToEth } from '../../../utils/function/format';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
@@ -20,9 +22,10 @@ const Harvested = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
+         const productFilted = response.filter((data: any) => data.productState === StateProduct.Harvested);
          const listProducts = [];
-         for (let i = 0; i < response.length; i++) {
-            listProducts.push(convertObjectProduct(response[i].productDetails))
+         for (let i = 0; i < productFilted.length; i++) {
+            listProducts.push(convertObjectProduct(productFilted[i]));
          }
          setProducts(listProducts.reverse());
       } catch (error) {
@@ -32,16 +35,18 @@ const Harvested = () => {
 
    const convertObjectProduct = (data: any) => {
       return {
-         name: data[0],
-         code: data[1],
-         price: data[2],
-         category: data[5],
-         images: data[6],
-         description: data[7],
-         quantity: data[8],
-         temp: data[9],
-         humidity: data[10],
-         date: data[11]
+         uid: data.uid.toNumber(),
+         productState: data.productSatte,
+         name: data.productDetails.name,
+         code: data.productDetails.code,
+         price: formatToEth(data.productDetails.price),
+         category: data.productDetails.category,
+         images: data.productDetails.images,
+         description: data.productDetails.description,
+         quantity: data.productDetails.quantity.toNumber(),
+         temp: data.productDetails.temp,
+         humidity: data.productDetails.humidity,
+         date: data.productDetails.date.toNumber()
       }
    }
 
@@ -77,7 +82,12 @@ const Harvested = () => {
 
 export default Harvested;
 
-const columns = [
+export const columns = [
+   {
+      field: 'uid',
+      headerName: 'ID',
+      width: 40
+   },
    {
       field: 'code',
       headerName: 'Mã sản phẩm',
@@ -127,11 +137,11 @@ const columns = [
    },
    {
       field: 'date',
-      headerName: 'Ngày thu hoạch',
+      headerName: 'Ngày sản xuất',
       width: 140,
       renderCell: (params: any) => (
          <span>
-            {formatTime(params.row.date.toNumber() * 1000)}
+            {formatTime(params.row.date * 1000)}
          </span>
       )
    },

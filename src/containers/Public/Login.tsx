@@ -44,7 +44,7 @@ const Login = () => {
          navigate('/')
       } else if (isLoggedIn && (role === roles[roles.farmer] || role === roles[roles.deliveryhub] || role == roles[roles.thirdparty] ||
          role === roles[roles.admin])) {
-         navigate(`${path.DASHBOARD}`);
+         navigate(`${path.DASHBOARD}/${role}/statistical`);
       }
    }, [navigate, isLoggedIn])
 

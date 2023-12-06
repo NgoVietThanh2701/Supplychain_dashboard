@@ -25,7 +25,6 @@ const ProductCard = ({ data }: any) => {
          </div>
          <h3 className='text-lg text-[#616161] font-bold'>{data.title}</h3>
          <span className='text-green font-bold '>$ 2.6 AGT</span>
-         {/* <button className='text-green bg-green-100 px-3 py-2 rounded-lg'>Thêm vào giỏ hàng</button> */}
       </div>
    )
 }

@@ -14,7 +14,7 @@ export const sideBarAdmin = [
          {
             name: 'Thống kê',
             icon: <FiShoppingBag />,
-            path: '/dashboard/statistical'
+            path: path.ADMIN_STATISTICAL
          }
       ]
    },
@@ -63,6 +63,34 @@ export const sideBarFarmer = [
             name: 'Danh mục',
             icon: <RiContactsLine />,
             path: path.FARMER_CATEGORY
+         },
+      ],
+   },
+]
+
+export const sideBarThirdParty = [
+   {
+      title: 'Tổng quan',
+      links: [
+         {
+            name: 'Thống kê',
+            icon: <FiShoppingBag />,
+            path: path.THIRDPARTY_STATISTICAL
+         }
+      ]
+   },
+   {
+      title: 'Sản phẩm',
+      links: [
+         {
+            name: 'Shop',
+            icon: <AiOutlineShoppingCart />,
+            path: path.THIRDPARTY_SHOP
+         },
+         {
+            name: 'Kho hàng',
+            icon: <AiOutlineShoppingCart />,
+            path: path.THIRDPARTY_WAREHOUSE
          },
       ],
    },
