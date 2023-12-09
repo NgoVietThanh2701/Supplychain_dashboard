@@ -13,7 +13,12 @@ const path = {
    // thirdParty
    THIRDPARTY_STATISTICAL: 'thirdparty/statistical',
    THIRDPARTY_SHOP: 'thirdparty/shop',
-   THIRDPARTY_WAREHOUSE: 'thirdparty/warehouse',
+   THIRDPARTY_PURCHASE_ORDER: 'thirdparty/purchase-order',
+   THIRDPARTY_ORDERED: 'thirdparty/ordered',
+   // delivery hub
+   DELIVERYHUB_STATISTICAL: 'deliveryhub/statistical',
+   DELIVERYHUB_RECEIVE: 'deliveryhub/received-product',
+
    // -----------------------------------------
    LOGIN: '/login/:role',
    REGISTER: '/register/:role',
@@ -21,7 +26,8 @@ const path = {
    HOME: '/*',
    SHOP: '/shop',
    SINGLE_PRODUCT: '/single-product/:code',
-   BUY_TOKEN: '/buy-token'
+   BUY_TOKEN: '/buy-token',
+   PURCHARSE_FORM: '/purchase-form'
 }
 
 export default path

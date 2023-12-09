@@ -1,19 +1,21 @@
-import { BigNumber, ethers } from 'ethers';
-import React, { useState, useEffect } from 'react'
+import { ethers } from 'ethers';
+import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom';
 import DataTable from '../../../components/Dashboard/DataTable';
 import HarvestedModal from '../../../components/Dashboard/farmer/HarvestedModal';
 import Swal from 'sweetalert2';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
-import { formatTime } from '../../../utils/function/format';
 import StateProduct from '../../../utils/data/statesProduct';
 import { formatToEth } from '../../../utils/function/format';
+import { column1 } from '../../../utils/data/colums';
+import { useSelector } from 'react-redux';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const Harvested = () => {
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
+   const { currentUser } = useSelector((state: any) => state.user);
 
    const [products, setProducts] = useState<any>([]);
    const [isOpenModal, setIsOpenModal] = useState(false);
@@ -22,7 +24,7 @@ const Harvested = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => data.productState === StateProduct.Harvested);
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.Harvested && data.farmerDetails.farmer === currentUser?.addressWallet));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -51,8 +53,10 @@ const Harvested = () => {
    }
 
    useEffect(() => {
-      getProducts();
-   }, []);
+      if (currentUser?.address) {
+         getProducts();
+      }
+   }, [currentUser?.address]);
 
    const handleAddProduct = () => {
       if (!web3Provider) {
@@ -70,7 +74,7 @@ const Harvested = () => {
             <button onClick={handleAddProduct} className='text-white bg-bg-green py-[7px] text-sm px-[10px] rounded-lg'>Thêm sản phẩm</button>
          </div>
          {products.length > 0 ?
-            <DataTable columns={columns} rows={products} /> :
+            <DataTable columns={column1} rows={products} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -81,68 +85,3 @@ const Harvested = () => {
 }
 
 export default Harvested;
-
-export const columns = [
-   {
-      field: 'uid',
-      headerName: 'ID',
-      width: 40
-   },
-   {
-      field: 'code',
-      headerName: 'Mã sản phẩm',
-      width: 140,
-   },
-   {
-      field: 'name',
-      headerName: 'Tên',
-      width: 100,
-   },
-   {
-      field: 'images',
-      headerName: 'Hình ảnh',
-      renderCell: (params: any) => (
-         <img className='rounded-full w-20' src={params.row.images} alt="" />
-      )
-   },
-   {
-      field: 'price',
-      headerName: 'Giá (AGT)',
-      width: 100
-   },
-   {
-      field: 'category',
-      headerName: 'Loại',
-      width: 100
-   },
-   {
-      field: 'description',
-      headerName: 'Mô tả',
-      width: 120
-   },
-   {
-      field: 'quantity',
-      headerName: 'Số lượng (Kg)',
-      width: 100
-   },
-   {
-      field: 'temp',
-      headerName: 'Nhiệt độ (C)',
-      width: 100
-   },
-   {
-      field: 'humidity',
-      headerName: 'Độ ẩm (%)',
-      width: 80
-   },
-   {
-      field: 'date',
-      headerName: 'Ngày sản xuất',
-      width: 140,
-      renderCell: (params: any) => (
-         <span>
-            {formatTime(params.row.date * 1000)}
-         </span>
-      )
-   },
-]

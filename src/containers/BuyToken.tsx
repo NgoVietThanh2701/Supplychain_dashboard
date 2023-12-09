@@ -80,7 +80,7 @@ const BuyToken = () => {
          {isLoading && <Loading />}
          {isOpenModal && <SuccessModal setIsOpenModal={setIsOpenModal} txHash={txHash} title='Mua token AGT' />}
          <Header />
-         <header className='flex items-center justify-between w-5/6 px-5 mt-8'>
+         <div className='flex items-center justify-between w-5/6 px-5 mt-8'>
             {(address && web3Provider) ?
                <p className='text-green'>Kết nối ví thành công! <span className='text-333'>{address}</span></p> :
                <button className='text-red-500 text-lg'
@@ -90,7 +90,7 @@ const BuyToken = () => {
                <span className='inline-flex gap-2 items-center text-333'><MdOutlineManageHistory /> Lịch sử</span>
                <span className='inline-flex gap-2 items-center text-333'><BsQuestionCircle /> Câu hỏi thường gặp</span>
             </div>
-         </header>
+         </div>
          <div className='flex justify-between gap-20 p-10'>
             <div className='flex flex-col gap-3'>
                <h3 className='text-333 text-4xl font-medium'>Mua tiền mã hóa</h3>

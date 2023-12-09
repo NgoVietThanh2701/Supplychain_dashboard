@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import Loading from '../../../components/Loading';
 import DataTable from '../../../components/Dashboard/DataTable';
-import { formatToEth } from '../../../utils/function/format';
+import Swal from 'sweetalert2';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
-import StateProduct from '../../../utils/data/statesProduct';
 import { ethers } from 'ethers';
 import { useOutletContext } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import Loading from '../../../components/Loading';
-import { column1 } from '../../../utils/data/colums';
+import StateProduct from '../../../utils/data/statesProduct';
+import { formatToEth } from '../../../utils/function/format';
+import { column3 } from '../../../utils/data/colums';
 import { useSelector } from 'react-redux';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
-const OrderFM = () => {
-
+const OrderedTPT = () => {
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
-   const { currentUser } = useSelector((state: any) => state.user);
    const [products, setProducts] = useState<any>([]);
    const [isLoading, setIsLoading] = useState(false);
+   const { currentUser } = useSelector((state: any) => state.user);
 
    const getProducts = async () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByThirdParty && data.farmerDetails.farmer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByCustomer && data.thirdPartyDetails
+            .thirdParty === currentUser?.addressWallet));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -39,8 +39,10 @@ const OrderFM = () => {
          uid: data.uid.toNumber(),
          productState: data.productState,
          name: data.productDetails.name,
+         feeShip: formatToEth(data.productDetails.feeShip),
          code: data.productDetails.code,
          price: formatToEth(data.productDetails.price),
+         priceTPT: formatToEth(data.productDetails.priceThirdParty),
          category: data.productDetails.category,
          images: data.productDetails.images,
          description: data.productDetails.description,
@@ -52,8 +54,10 @@ const OrderFM = () => {
    }
 
    useEffect(() => {
-      getProducts();
-   }, []);
+      if (currentUser?.addressWallet) {
+         getProducts();
+      }
+   }, [currentUser?.addressWallet]);
 
    const handleOrder = async (uid: number) => {
       if (!web3Provider) {
@@ -63,10 +67,10 @@ const OrderFM = () => {
       try {
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
-         await supplychainContract.shipByFarmer(uid);
+         await supplychainContract.shipByThirdParty(uid);
          setTimeout(() => {
             getProducts();
-         }, 3000)
+         }, 2500)
          setIsLoading(false);
       } catch (error) {
          setIsLoading(false)
@@ -74,8 +78,7 @@ const OrderFM = () => {
       }
    }
 
-   const action =
-   {
+   const action = {
       field: 'action',
       headerName: 'Thao tác',
       width: 80,
@@ -87,7 +90,6 @@ const OrderFM = () => {
       )
    }
 
-
    return (
       <div className='w-auto bg-white mx-5 px-5 py-5 mt-14 rounded-lg'>
          {isLoading && <Loading />}
@@ -95,7 +97,7 @@ const OrderFM = () => {
             <h3 className='text-444 text-xl font-medium mb-5'>Danh sách đơn đặt hàng</h3>
          </div>
          {products.length > 0 ?
-            <DataTable columns={column1.concat(action)} rows={products} /> :
+            <DataTable columns={column3.concat(action)} rows={products} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -105,4 +107,4 @@ const OrderFM = () => {
    )
 }
 
-export default OrderFM
+export default OrderedTPT

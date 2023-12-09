@@ -28,8 +28,8 @@ export default class SupplyChainContract extends BaseInterface {
    }
 
    // step 1: famer -> harvested product 
-   async harvestedProduct(name: string, code: string, price: BigNumber, category: string, images: string, description: string, quantity: number, longitude: string, latitude: string, temp: string, humidity: number) {
-      await this._contract.harvestedProduct(name, code, price, category, images, description, quantity, longitude, latitude, temp, humidity, this._option)
+   async harvestedProduct(name: string, code: string, price: number, category: string, images: string, description: string, quantity: number, longitude: string, latitude: string, temp: string, humidity: number) {
+      await this._contract.harvestedProduct(name, code, this._parseToEth(price), category, images, description, quantity, longitude, latitude, temp, humidity, this._option)
    }
 
    // step 2: third party purschar product
@@ -47,8 +47,37 @@ export default class SupplyChainContract extends BaseInterface {
       await this._contract.receiveByThirdParty(uid, longitude, latitude, this._option);
    }
 
+   // step 5: thirdparty -> add price for sold product
+   async sellByThirdParty(uid: number, price: number) {
+      await this._contract.sellByThirdParty(uid, this._parseToEth(price), this._option);
+   }
+
+   // step 6: customer buy product
+   async purchaseByCustomer(uid: number, feeShip: number) {
+      await this._contract.purchaseByCustomer(uid, this._parseToEth(feeShip), this._option);
+   }
+
+   // step 7: third party ship product
+   async shipByThirdParty(uid: number) {
+      await this._contract.shipByThirdParty(uid, this._option);
+   }
+
+   // step 8: delivery hub receive product
+   async receiveByDeliveryHub(uid: number, longitude: string, latitude: string) {
+      await this._contract.receiveByDeliveryHub(uid, longitude, latitude, this._option);
+   }
+   // step 9: delivery ship product to customer
+   async shipByDeliveryHub(uid: number) {
+      await this._contract.shipByDeliveryHub(uid, this._option);
+   }
+
+   // step 10: customer confirm receive product
+   async receiveByCustomer(uid: number) {
+      await this._contract.receiveByCustomer(uid, this._option);
+   }
+
    async getProductByCode(code: string) {
-      const product = await this._contract.getProductByCode(code);
+      const product = await this._contract.getProductByCode(code, this._option);
       return product;
    }
 

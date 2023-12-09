@@ -88,9 +88,37 @@ export const sideBarThirdParty = [
             path: path.THIRDPARTY_SHOP
          },
          {
-            name: 'Kho hàng',
+            name: 'Đơn đặt hàng',
             icon: <AiOutlineShoppingCart />,
-            path: path.THIRDPARTY_WAREHOUSE
+            path: path.THIRDPARTY_ORDERED
+         },
+         {
+            name: 'Đơn mua',
+            icon: <AiOutlineShoppingCart />,
+            path: path.THIRDPARTY_PURCHASE_ORDER
+         },
+      ],
+   },
+]
+
+export const sideBarDeliveryHub = [
+   {
+      title: 'Tổng quan',
+      links: [
+         {
+            name: 'Thống kê',
+            icon: <FiShoppingBag />,
+            path: path.DELIVERYHUB_STATISTICAL
+         }
+      ]
+   },
+   {
+      title: 'Đơn hàng',
+      links: [
+         {
+            name: 'Đơn hàng',
+            icon: <AiOutlineShoppingCart />,
+            path: path.DELIVERYHUB_RECEIVE
          },
       ],
    },

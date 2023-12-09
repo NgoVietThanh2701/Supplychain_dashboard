@@ -23,15 +23,20 @@ const ProductCard = ({ data, getProducts }: any) => {
          Swal.fire('Opps', 'Vui lòng kết nối với ví', 'error');
          return;
       }
-      setIsLoading(true);
-      const supplychainContract = new SupplyChainContract(web3Provider);
-      const agtContract = new AGTContract(web3Provider);
-      await agtContract.approve(supplychainContract._contractAddress, price);
-      await supplychainContract.purchaseByThirdParty(uid);
-      setTimeout(() => {
-         getProducts();
-      }, 2500);
-      setIsLoading(false);
+      try {
+         setIsLoading(true);
+         const supplychainContract = new SupplyChainContract(web3Provider);
+         const agtContract = new AGTContract(web3Provider);
+         await agtContract.approve(supplychainContract._contractAddress, price);
+         await supplychainContract.purchaseByThirdParty(uid);
+         setTimeout(() => {
+            getProducts();
+         }, 3500);
+         setIsLoading(false);
+      } catch (error) {
+         console.log(error)
+         setIsLoading(false);
+      }
    }
 
    const openModal = () => {
@@ -60,8 +65,6 @@ const ProductCard = ({ data, getProducts }: any) => {
 }
 
 const ProductTPT = ({ dataProduct, getProducts }: any) => {
-
-   console.log(dataProduct)
 
    return (
       <div className='w-11/12 flex flex-col items-center gap-4 mt-2 py-2 mx-auto'>

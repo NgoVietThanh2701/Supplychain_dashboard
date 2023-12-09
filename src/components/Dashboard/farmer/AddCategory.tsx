@@ -3,6 +3,7 @@ import { IoCloseCircleOutline } from 'react-icons/io5'
 import InputForm from '../../Public/InputForm'
 import validate from '../../../utils/function/validateField';
 import { apiaddCategory } from '../../../services/farmerServices';
+
 const AddCategory = ({ setIsOpenModal, getCategories }: any) => {
 
    const [invalidFields, setInvalidFields] = useState<any>([]);

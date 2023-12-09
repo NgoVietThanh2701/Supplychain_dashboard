@@ -18,7 +18,11 @@ import Category from './containers/Dashboard/farmer/Category';
 import OrderFM from './containers/Dashboard/farmer/OrderFM';
 import StatisticalTPT from './containers/Dashboard/thirdParty/StatisticalTPT';
 import ShopProductTPT from './containers/Dashboard/thirdParty/ShopProductTPT';
-import Warehouse from './containers/Dashboard/thirdParty/Warehouse';
+import PurchaseTPT from './containers/Dashboard/thirdParty/PurchaseTPT';
+import StatisticalDH from './containers/Dashboard/deliveryhub/StatisticalDH';
+import OrderedTPT from './containers/Dashboard/thirdParty/OrderedTPT';
+import ReceiveDH from './containers/Dashboard/deliveryhub/ReceiveDH';
+import PurchaseForm from './containers/Public/PurchaseForm';
 
 const App = () => {
 
@@ -38,7 +42,11 @@ const App = () => {
             {/* third party */}
             <Route path={path.THIRDPARTY_STATISTICAL} element={<StatisticalTPT />} />
             <Route path={path.THIRDPARTY_SHOP} element={<ShopProductTPT />} />
-            <Route path={path.THIRDPARTY_WAREHOUSE} element={<Warehouse />} />
+            <Route path={path.THIRDPARTY_PURCHASE_ORDER} element={<PurchaseTPT />} />
+            <Route path={path.THIRDPARTY_ORDERED} element={<OrderedTPT />} />
+            {/* delivery hub */}
+            <Route path={path.DELIVERYHUB_STATISTICAL} element={<StatisticalDH />} />
+            <Route path={path.DELIVERYHUB_RECEIVE} element={<ReceiveDH />} />
          </Route>
          {/* Public */}
          <Route path={path.LOGIN} element={<Login />} />
@@ -49,6 +57,7 @@ const App = () => {
          <Route path={path.SHOP} element={<Shop />} />
          <Route path={path.SINGLE_PRODUCT} element={<SingleProduct />} />
          <Route path={path.BUY_TOKEN} element={<BuyToken />} />
+         <Route path={path.PURCHARSE_FORM} element={<PurchaseForm />} />
       </Routes>
 
    )

@@ -11,7 +11,6 @@ import axios from 'axios';
 import Loading from '../../Loading';
 import { ethers } from 'ethers';
 import { useOutletContext } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 const { v4: uuidv4 } = require('uuid');
 
@@ -96,10 +95,10 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             });
             const urlImage = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
             const supplychainContract = new SupplyChainContract(web3Provider);
-            await supplychainContract.harvestedProduct(payload.name, uuidv4(), supplychainContract._parseToEth(Number.parseFloat(payload.price)), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
+            await supplychainContract.harvestedProduct(payload.name, uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
             setTimeout(() => {
                getProducts();
-            }, 3000);
+            }, 3500);
             setIsLoading(false);
             setIsOpenModal(false);
          } catch (error) {

@@ -13,6 +13,10 @@ import { getCurrentUser, resetCurrentUser } from '../../features/userSlice';
 import roles from '../../utils/data/roles';
 import checkTokenExpired from '../../utils/function/checkTokenExpired';
 import { showShortAddress } from '../../utils/function/format';
+import { ethers } from 'ethers';
+import Swal from 'sweetalert2';
+
+declare var window: any;
 
 const Header = () => {
 
@@ -25,6 +29,7 @@ const Header = () => {
    const goLogout = useCallback(() => {
       dispatch(resetAuth());
       dispatch(resetCurrentUser());
+      localStorage.removeItem('supplychain_address');
       navigate('/');
    }, [dispatch, navigate]);
 
@@ -57,10 +62,10 @@ const Header = () => {
             </Link>
          </div>
          <ul className='flex gap-6'>
-            <NavLink to='/'>
+            <NavLink className={({ isActive }) => isActive ? 'border-b-2 border-green-500' : ''} to='/' key='/'>
                Trang chủ
             </NavLink>
-            <NavLink to={path.SHOP}>
+            <NavLink to={path.SHOP} key={path.SHOP} className={({ isActive }) => isActive ? 'border-b-2 border-green-500' : ''} >
                Cửa hàng
             </NavLink>
             {!currentUser &&
@@ -92,24 +97,25 @@ const Header = () => {
                   <div className=" z-10 h-7 w-52 absolute top-full left-0"></div>
                </div>
                )}
-            <NavLink to={path.BUY_TOKEN}>Mua Token</NavLink>
+            <NavLink to={path.BUY_TOKEN} className={({ isActive }) => isActive ? 'border-b-2 border-green-500' : ''} key={path.BUY_TOKEN}>Mua Token</NavLink>
          </ul>
          <div className='flex items-center gap-2'>
-            {currentUser &&
-               <div className=' border-gray-300 rounded-md p-2 text-333'>
-                  {currentUser?.name} ({showShortAddress(currentUser?.addressWallet, 4)}) <span className='text-green font-medium'>2,6 AGT</span>
+            {
+               currentUser &&
+               <div className='group relative cursor-pointer'>
+                  <div className='flex items-center justify-center gap-[2px]'>
+                     {currentUser?.name} ({showShortAddress(currentUser?.addressWallet, 4)})<IoIosArrowDown size={13} className='text-primary2' />
+                  </div>
+                  <ul className='w-48 bg-white hidden group-hover:block absolute top-10 left-0  rounded-b-md z-20 shadow-md px-5 py-4 transform transition duration-300 nav-item'>
+                     <button onClick={goLogout} className='block py-2 hover:text-green'>Đăng xuất</button>
+                     <Link to={path.PURCHARSE_FORM} className='block py-2 hover:text-green'>Đơn mua</Link>
+                  </ul>
+                  <div className=" z-10 h-7 w-52 absolute top-full left-0"></div>
                </div>
             }
-            {currentUser &&
-               <button onClick={goLogout}>Đăng xuất</button>}
             <div className='border-1 border-gray-300 rounded-md p-2 hover:bg-bg-green text-666 hover:text-white'>
                <IoSearchSharp size={18} />
             </div>
-            <div className='relative border-1 border-gray-300 rounded-md p-2 hover:bg-bg-green text-666 hover:text-white'>
-               <BsCart size={18} />
-               <span className='absolute top-0 right-0 bg-bg-green text-white w-4 text-center rounded-full text-xs'>2</span>
-            </div>
-
          </div>
       </div>
    )
