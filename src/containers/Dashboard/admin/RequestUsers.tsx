@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import DataTable from '../../../components/Dashboard/DataTable';
 import { apiApproveRequest, apiDeleteRequest, apigetRequestUsers, apigetSingleUser } from '../../../services/adminServices';
-import { showShortAddress } from '../../../utils/function/format';
+import { formatTime, showShortAddress } from '../../../utils/function/format';
 import Loading from '../../../components/Loading';
 import Swal from 'sweetalert2';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
@@ -34,9 +34,8 @@ const RequestUsers = () => {
    const columns = [
       {
          field: 'code',
-         headerName: 'ID',
+         headerName: 'code',
          width: 120,
-         heigth: 120
       },
       {
          field: 'name',
@@ -46,12 +45,12 @@ const RequestUsers = () => {
       {
          field: 'email',
          headerName: 'Email',
-         width: 200
+         width: 220
       },
       {
          field: 'description',
          headerName: 'Mô tả',
-
+         width: 80
       },
       {
          field: 'addressWallet',
@@ -66,17 +65,20 @@ const RequestUsers = () => {
       {
          field: 'role',
          headerName: 'Loại',
-         width: 100
+         width: 120
       },
       {
          field: 'createdAt',
          headerName: 'Ngày đăng ký',
-         width: 180
+         width: 150,
+         renderCell: (params: any) => (
+            <span>{formatTime(params.row.createdAt)}</span>
+         )
       },
       {
          field: 'action',
          headerName: 'Thao tác',
-         width: '180',
+         width: '150',
          renderCell: (params: any) => (
             <div>
                <button onClick={() => handleApprove(params.row.code)} className='text-white bg-bg-green rounded-md px-2 py-1'>
@@ -88,7 +90,7 @@ const RequestUsers = () => {
             </div>
          )
       }
-   ]
+   ];
 
    const handleApprove = async (code: string) => {
       if (!web3Provider) {

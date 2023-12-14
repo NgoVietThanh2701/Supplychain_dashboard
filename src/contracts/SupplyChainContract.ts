@@ -53,8 +53,8 @@ export default class SupplyChainContract extends BaseInterface {
    }
 
    // step 6: customer buy product
-   async purchaseByCustomer(uid: number, feeShip: number) {
-      await this._contract.purchaseByCustomer(uid, this._parseToEth(feeShip), this._option);
+   async purchaseByCustomer(uid: number, feeShip: number, addressShip: string) {
+      await this._contract.purchaseByCustomer(uid, this._parseToEth(feeShip), addressShip, this._option);
    }
 
    // step 7: third party ship product

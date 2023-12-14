@@ -9,6 +9,9 @@ export const showShortAddress = (address: string, amount: number): string => {
    )}`
 }
 
+export function capitalizeFirstLetter(string: string): string {
+   return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export const formatTime = (createdAt: any) => {
    moment.locale('vi');

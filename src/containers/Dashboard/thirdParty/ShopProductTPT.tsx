@@ -48,7 +48,7 @@ const ShopProductTPT = () => {
 
    return (
       <div>
-         <Pagination itemsPerPage={8} data={products} Component={ProductTPT} getProducts={getProducts} />
+         <Pagination itemsPerPage={10} data={products} Component={ProductTPT} getProducts={getProducts} />
       </div>
    )
 }

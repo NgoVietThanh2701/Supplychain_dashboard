@@ -109,8 +109,8 @@ const SideBar = () => {
                            </div>
                         ))}
                      </>}
+                  <button className={`${normalLink} w-full mt-3`} onClick={logOut}> Logout</button>
                </div>
-               <button className={`mt-4 mx-3 font-medium ${normalLink}`} onClick={logOut}> Logout</button>
             </>}
       </div>
    )

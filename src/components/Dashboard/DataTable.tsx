@@ -1,5 +1,4 @@
 import { DataGrid } from '@mui/x-data-grid';
-import { useState } from 'react'
 
 const DataTable = ({ rows, columns, height }: any) => {
 

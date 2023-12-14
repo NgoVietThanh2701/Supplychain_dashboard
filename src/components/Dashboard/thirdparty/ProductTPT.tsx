@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { HiOutlineViewfinderCircle } from 'react-icons/hi2';
 import ModalViewProduct from '../ModalViewProduct';
@@ -48,13 +48,13 @@ const ProductCard = ({ data, getProducts }: any) => {
    }
 
    return (
-      <div className='border-item-product py-2 flex flex-col items-center gap-2 group relative'>
+      <div className='border-item-product pt-1 pb-2 flex flex-col rounded-md items-center gap-1.5 group relative bg-white'>
          {isOpenModal && <ModalViewProduct setIsOpenModal={setIsOpenModal} product={data} />}
          {isLoading && <Loading />}
          <button onClick={openModal} className='p-[10px] rounded-full bg-[#49A760] absolute z-10 top-2 right-0 opacity-0 group-hover:opacity-100 transition-all group-hover:transform group-hover:translate-x-[-30%] duration-300'>
             <HiOutlineViewfinderCircle size={20} color='white' />
          </button>
-         <div className='w-40 h-40'>
+         <div className='w-48 h-36'>
             <img src={data.images} className='w-full h-full object-cover' />
          </div>
          <h3 className='text-lg text-[#616161] font-bold'>{data.name}</h3>
@@ -71,7 +71,7 @@ const ProductTPT = ({ dataProduct, getProducts }: any) => {
          <h3 className='text-333 font-medium'>Thu mua sản phẩm chất lượng cao, giá rẻ tại đây</h3>
          <div className='w-full flex flex-wrap -m-2'>
             {dataProduct?.map((data: any) => (
-               <div key={data.uid} className='w-1/4 p-2'>
+               <div key={data.uid} className='w-1/5 p-2'>
                   <ProductCard data={data} getProducts={getProducts} />
                </div>
             ))}

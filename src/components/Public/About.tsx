@@ -8,9 +8,9 @@ const about_slc = require('../../utils/images/about_slc.jpg');
 
 const Card = ({ data }: any) => {
    return (
-      <div className='mx-2 pb-5 border-item-product' key={data.id}>
+      <div className='mx-2 pb-5 border-item-product'>
          <div className='w-full h-60'>
-            <img src={data.image} alt="" className='w-full h-full object-cover' />
+            <img src={data.image} alt="" className='w-full h-full object-cover p-2' />
          </div>
          <div className='text-green text-base flex items-center gap-2 mx-5 my-3'><div className='w-2 h-2 rounded-full bg-bg-green'></div>{data.title}</div>
          <p className='text-333 text-base mx-5 font-bold'>{data.description}</p>
@@ -50,13 +50,13 @@ const About = () => {
             <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='mt-20'>
                <Slider {...settings}>
                   {dataAbout.map((data: any) => (
-                     <Card data={data} />
+                     <Card key={data.id} data={data} />
                   ))}
                </Slider>
             </div>
          </div>
          <div className='flex-auto text-red'>
-            <p className='text-[#7A7E9A] leading-7 border-l-1 border-color pl-3 ml-20'>AgriChain is a software platform that brings together all stakeholders in the agricultural supply chain, allowing them make better-informed decisions, eliminate unnecessary paperwork and dockets, reduce supply chain inefficiency and risk, open markets and increase their bottom line, all on one easy-to-use platform.</p>
+            <p className='text-[#7A7E9A] leading-7 border-l-1 border-color pl-3 ml-20 text-justify'>AgriChain là một nền tảng phần mềm tập hợp tất cả các bên liên quan trong chuỗi cung ứng nông nghiệp, cho phép họ đưa ra quyết định sáng suốt hơn, loại bỏ các thủ tục giấy tờ và sổ ghi chép không cần thiết, giảm thiểu rủi ro và hiệu quả của chuỗi cung ứng, mở cửa thị trường và tăng lợi nhuận, tất cả chỉ trong một - nền tảng để sử dụng..</p>
             <div className='w-full mt-10'>
                <img src={about_slc} className='w-full h-full object-cover' alt="" />
             </div>

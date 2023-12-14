@@ -8,6 +8,7 @@
     "@material-tailwind/react": "^2.1.5",
     "@mui/material": "^5.14.18",
     "@mui/x-data-grid": "^6.18.2",
+    "@react-google-maps/api": "^2.18.1",
     "@reduxjs/toolkit": "^1.9.7",
     "@syncfusion/ej2-react-popups": "^19.4.52",
     "@testing-library/jest-dom": "^5.17.0",

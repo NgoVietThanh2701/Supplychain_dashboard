@@ -39,7 +39,7 @@ const ModalViewProduct = ({ setIsOpenModal, product }: any) => {
                   <h3 className='text-[#616161] text-xl font-semibold'>Tên: {product.name}</h3>
                   <span className='line-clamp-3'>{product.description} Dèn học để bàn RẠNG ĐÔNG chống cận MẪU MỚI kèm bóng LED 5W tiết kiệm điện năng, bảo vệ thị lực (ánh sáng vàng)</span>
                   <span className='text-green font-bold text-lg py-1'>Giá: {product.price} AGT</span>
-                  <span className='text-444'>Số lượng: {product.quantity}</span>
+                  <span className='text-444'>Số lượng: {product.quantity} Kg</span>
                   <button className={`text-white rounded-md px-3 py-1 mt-2 mx-auto`} style={{ backgroundColor: currentColor }} >Thu mua</button>
                </div>
             </div>

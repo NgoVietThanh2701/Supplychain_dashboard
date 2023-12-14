@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import InputForm from '../../Public/InputForm';
 import { BsCloudArrowUp } from "react-icons/bs";
 import { WiHumidity } from "react-icons/wi";
 import { CiLocationOn } from "react-icons/ci";
 import { LiaTemperatureLowSolid } from "react-icons/lia";
-import { apigetCategories, apigetLocation, apigetWeather } from '../../../services/farmerServices';
+import { apigetCategories } from '../../../services/farmerServices';
 import validate from '../../../utils/function/validateField';
 import axios from 'axios';
 import Loading from '../../Loading';
 import { ethers } from 'ethers';
 import { useOutletContext } from 'react-router-dom';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
-const { v4: uuidv4 } = require('uuid');
+import { capitalizeFirstLetter } from '../../../utils/function/format';
+import AutoCompleteMap from '../../AutoCompleteMap';
 
+const { v4: uuidv4 } = require('uuid');
 const noImg = require('../../../utils/images/no-data.jpg');
 const pinataConfig = {
    root: 'https://api.pinata.cloud',
@@ -52,18 +54,6 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
       setPreview(URL.createObjectURL(image));
    }
 
-   const handleWeather = async () => {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-         setPayload((prev) => ({ ...prev, latitude: position.coords.latitude }));
-         setPayload((prev) => ({ ...prev, longitude: position.coords.longitude }));
-         const result = await apigetWeather(position.coords.latitude, position.coords.longitude);
-         setPayload((prev) => ({ ...prev, temp: result.temp }));
-         setPayload((prev) => ({ ...prev, humidity: result.humidity }));
-         const location = await apigetLocation(position.coords.latitude, position.coords.longitude);
-         setPayload((prev) => ({ ...prev, location: location }));
-      })
-   }
-
    const getCategories = async () => {
       try {
          const response = await apigetCategories();
@@ -95,10 +85,10 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             });
             const urlImage = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
             const supplychainContract = new SupplyChainContract(web3Provider);
-            await supplychainContract.harvestedProduct(payload.name, uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
+            await supplychainContract.harvestedProduct(capitalizeFirstLetter(payload.name), uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
             setTimeout(() => {
                getProducts();
-            }, 3500);
+            }, 3000);
             setIsLoading(false);
             setIsOpenModal(false);
          } catch (error) {
@@ -112,7 +102,7 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
    }
 
    return (
-      <div className='bg-half-transparent nav-item w-screen fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center'>
+      <div className='bg-half-transparent z-10 w-screen fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center'>
          {isLoading && <Loading />}
          <div className='bg-white w-[720px] relative group rounded-md py-3 px-5 flex flex-col gap-3'>
             <button className='absolute top-2 right-2 text-444' onClick={() => setIsOpenModal(false)}>
@@ -168,9 +158,9 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
                <textarea id="description" rows={2} onChange={(e) => setPayload((prev: any) => ({ ...prev, descriptionProduct: e.target.value }))}
                   className="block p-2.5 w-full text-sm text-333 bg-gray-50 rounded-lg outline-none border-color focus:border-[#3B71CA] border-1" placeholder="Nhập thông tin mô tả sản phẩm tại đây..."></textarea>
             </div>
-            <div className='flex items-center justify-center gap-8'>
-               <div className='w-1/2 flex flex-col items-center'>
-                  <img src={payload.image ? preview : noImg} alt="" className='w-48 max-h-48 object-contain' />
+            <div className='flex justify-center gap-1'>
+               <div className='w-2/5 flex flex-col items-center'>
+                  <div className='w-full h-[220px] p-2'><img src={payload.image ? preview : noImg} alt="" className='w-full h-full object-cover' /></div>
                   <input type="file" id='img' onChange={loadImage} style={{ display: "none" }} />
                   <label className='text-333 mt-1 inline-flex items-center gap-2' htmlFor="img">Chọn file <BsCloudArrowUp size={20} /></label>
                   {invalidFields.length > 0 && invalidFields.some((i: any) => i.name === 'image') &&
@@ -179,13 +169,16 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
                      </small>
                   }
                </div>
-               <div className='flex-auto flex flex-col'>
-                  <button onClick={handleWeather} className='text-444 border mx-auto border-color px-3 py-2 rounded-md'>Thêm thông tin thời tiết</button>
+               <div className='w-3/5 flex flex-col pt-3'>
+                  <AutoCompleteMap setPayload={setPayload} label='Thêm nơi sản xuất' />
                   {payload.latitude !== 0 && payload.longitude !== 0 &&
                      <ul className='flex flex-col ml-3 mt-3 gap-2'>
-                        <span className='inline-flex items-center gap-2 text-333'><CiLocationOn size={24} /> {payload.location}</span>
-                        <span className='inline-flex items-center gap-2 text-333'><WiHumidity size={28} color='#4da6ff' /> {payload.humidity} %</span>
-                        <span className='inline-flex items-center gap-2 text-333'><LiaTemperatureLowSolid size={26} color='#ff6666' />
+                        <div className='flex items-center gap-2'>
+                           <div className='w-7'><CiLocationOn size={22} /></div>
+                           <span className='items-center line-clamp-3 text-sm text-333'> {payload.location}</span>
+                        </div>
+                        <span className='inline-flex items-center text-sm gap-2 text-333'><WiHumidity size={25} color='#4da6ff' /> {payload.humidity} %</span>
+                        <span className='inline-flex items-center text-sm gap-2 text-333'><LiaTemperatureLowSolid size={23} color='#ff6666' />
                            {payload.temp} độ C
                         </span>
                      </ul>}

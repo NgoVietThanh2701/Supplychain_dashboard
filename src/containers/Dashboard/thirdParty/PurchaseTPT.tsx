@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import DataTable from '../../../components/Dashboard/DataTable';
-import { formatToEth } from '../../../utils/function/format';
+import { formatTime, formatToEth } from '../../../utils/function/format';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import StateProduct from '../../../utils/data/statesProduct';
 import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react";
@@ -9,7 +9,7 @@ import { useOutletContext } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Loading from '../../../components/Loading';
 import SellProductModal from '../../../components/Dashboard/thirdparty/SellProductModal';
-import { column1, column2 } from '../../../utils/data/colums';
+import { columnFM } from '../farmer/OrderFM';
 import { useSelector } from 'react-redux';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
@@ -183,7 +183,7 @@ const PurchaseTPT = () => {
          label: `Đơn hàng đang giao (${productsShip.length})`,
          value: "purchase",
          desc: productsShip.length > 0 ?
-            <DataTable columns={column1.concat(actionReceive)} rows={productsShip} /> :
+            <DataTable columns={columnFM.concat(actionReceive)} rows={productsShip} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -193,7 +193,7 @@ const PurchaseTPT = () => {
          label: `Kho hàng (${productsReceive.length})`,
          value: "warehouse",
          desc: productsReceive.length > 0 ?
-            <DataTable columns={column1.concat(actionWarehouse)} rows={productsReceive} /> :
+            <DataTable columns={columnFM.concat(actionWarehouse)} rows={productsReceive} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -203,7 +203,7 @@ const PurchaseTPT = () => {
          label: `Sản phẩm (${products.length})`,
          value: "products",
          desc: products.length > 0 ?
-            <DataTable columns={column2} rows={products} /> :
+            <DataTable columns={columnTPT} rows={products} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -220,7 +220,7 @@ const PurchaseTPT = () => {
                className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
                indicatorProps={{ className: "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none" }}>
                {data.map(({ label, value }) => (
-                  <Tab key={value} value={value} onClick={() => setActiveTab(value)} className={activeTab === value ? "text-gray-900 border-b-2 border-green-600" : ""}>
+                  <Tab key={value} value={value} onClick={() => setActiveTab(value)} className={activeTab === value ? "text-gray-900 border-b-2 border-green-600 " : ""} >
                      {label}
                   </Tab>
                ))}
@@ -237,4 +237,84 @@ const PurchaseTPT = () => {
    );
 }
 
-export default PurchaseTPT
+export default PurchaseTPT;
+
+export const columnTPT = [
+   {
+      field: 'uid',
+      headerName: 'ID',
+      width: 20
+   },
+   {
+      field: 'code',
+      headerName: 'Mã sản phẩm',
+      width: 100,
+   },
+   {
+      field: 'name',
+      headerName: 'Tên',
+      width: 100,
+   },
+   {
+      field: 'images',
+      headerName: 'Hình ảnh',
+      width: 135,
+      renderCell: (params: any) => (
+         <img className='rounded-full w-full h-full object-cover' src={params.row.images} alt="" />
+      )
+   },
+   {
+      field: 'price',
+      headerName: 'Giá gốc',
+      width: 90
+   },
+   {
+      field: 'priceTPT',
+      headerName: 'Giá bán',
+      width: 90
+   },
+   {
+      field: 'category',
+      headerName: 'Loại',
+      width: 80
+   },
+   {
+      field: 'description',
+      headerName: 'Mô tả',
+      width: 80
+   },
+   {
+      field: 'quantity',
+      headerName: 'Số lượng',
+      width: 70,
+      renderCell: (params: any) => (
+         <span>{params.row.quantity} Kg</span>
+      )
+   },
+   {
+      field: 'temp',
+      headerName: 'Nhiệt độ',
+      width: 80,
+      renderCell: (params: any) => (
+         <span>{Math.round(params.row.temp)} độ C</span>
+      )
+   },
+   {
+      field: 'humidity',
+      headerName: 'Độ ẩm',
+      width: 70,
+      renderCell: (params: any) => (
+         <span>{params.row.humidity} %</span>
+      )
+   },
+   {
+      field: 'date',
+      headerName: 'Ngày sản xuất',
+      width: 115,
+      renderCell: (params: any) => (
+         <span>
+            {formatTime(params.row.date * 1000)}
+         </span>
+      )
+   },
+]

@@ -45,6 +45,8 @@ const SingleProduct = () => {
          productState: data.productState,
          name: data.productDetails.name,
          code: data.productDetails.code,
+         thirdParty: data.thirdPartyDetails,
+         farmer: data.farmerDetails,
          price: formatToEth(data.productDetails.price),
          priceTPT: formatToEth(data.productDetails.priceThirdParty),
          category: data.productDetails.category,

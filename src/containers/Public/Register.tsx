@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Header from '../../components/Public/Header';
 import Footer from '../../components/Public/Footer';
+import SupplyChainContract from '../../contracts/SupplyChainContract';
 
 declare var window: any;
 const loginImg = require('../../utils/images/login.jpg');
@@ -17,6 +18,7 @@ const loginImg = require('../../utils/images/login.jpg');
 const Register = () => {
 
    const navigate = useNavigate();
+   const [web3Provider, setWeb3Provider] = useState<any>();
 
    interface InvalidField {
       name: string,
@@ -39,15 +41,21 @@ const Register = () => {
    }, []);
 
    const handleSubmit = async () => {
+      if (!web3Provider) {
+         Swal.fire('Opps', 'Vui lòng kết nối với ví', 'error');
+         return;
+      }
       let invalids = validate(payload, setInvalidFields);
       if (invalids === 0) {
          try {
+            const supplychainContract = new SupplyChainContract(web3Provider);
             const response = await apiRegister(payload);
             Swal.fire({
                title: "Đăng ký thành công!",
                text: response.data.message,
                icon: "success"
             });
+            await supplychainContract.addCustomer(payload.addressWallet);
             navigate(`./${payload.email}/verify-otp`);
          } catch (error: any) {
             Swal.fire({
@@ -66,6 +74,7 @@ const Register = () => {
          const signer = provider.getSigner();
          const address = await signer.getAddress();
          setPayload((prev: any) => ({ ...prev, addressWallet: address }));
+         setWeb3Provider(provider);
       }
    }
 
@@ -104,7 +113,7 @@ const Register = () => {
                      keyPayload='password'
                      type='password'
                   />
-                  {role !== roles[roles.customer] &&
+                  {role === roles[roles.thirdparty] &&
                      <InputForm
                         setInvalidFields={setInvalidFields}
                         invalidFields={invalidFields}

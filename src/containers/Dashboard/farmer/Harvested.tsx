@@ -6,8 +6,7 @@ import HarvestedModal from '../../../components/Dashboard/farmer/HarvestedModal'
 import Swal from 'sweetalert2';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import StateProduct from '../../../utils/data/statesProduct';
-import { formatToEth } from '../../../utils/function/format';
-import { column1 } from '../../../utils/data/colums';
+import { formatTime, formatToEth } from '../../../utils/function/format';
 import { useSelector } from 'react-redux';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
@@ -53,10 +52,10 @@ const Harvested = () => {
    }
 
    useEffect(() => {
-      if (currentUser?.address) {
+      if (currentUser?.addressWallet) {
          getProducts();
       }
-   }, [currentUser?.address]);
+   }, [currentUser?.addressWallet]);
 
    const handleAddProduct = () => {
       if (!web3Provider) {
@@ -74,7 +73,7 @@ const Harvested = () => {
             <button onClick={handleAddProduct} className='text-white bg-bg-green py-[7px] text-sm px-[10px] rounded-lg'>Thêm sản phẩm</button>
          </div>
          {products.length > 0 ?
-            <DataTable columns={column1} rows={products} /> :
+            <DataTable columns={columnFM} rows={products} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -85,3 +84,68 @@ const Harvested = () => {
 }
 
 export default Harvested;
+
+const columnFM = [
+   {
+      field: 'uid',
+      headerName: 'ID',
+      width: 40
+   },
+   {
+      field: 'code',
+      headerName: 'Mã sản phẩm',
+      width: 140,
+   },
+   {
+      field: 'name',
+      headerName: 'Tên',
+      width: 100,
+   },
+   {
+      field: 'images',
+      headerName: 'Hình ảnh',
+      renderCell: (params: any) => (
+         <img className='rounded-full w-20' src={params.row.images} alt="" />
+      )
+   },
+   {
+      field: 'price',
+      headerName: 'Giá (AGT)',
+      width: 100
+   },
+   {
+      field: 'category',
+      headerName: 'Loại',
+      width: 100
+   },
+   {
+      field: 'description',
+      headerName: 'Mô tả',
+      width: 100
+   },
+   {
+      field: 'quantity',
+      headerName: 'Số lượng (Kg)',
+      width: 100
+   },
+   {
+      field: 'temp',
+      headerName: 'Nhiệt độ (C)',
+      width: 100
+   },
+   {
+      field: 'humidity',
+      headerName: 'Độ ẩm (%)',
+      width: 80
+   },
+   {
+      field: 'date',
+      headerName: 'Ngày sản xuất',
+      width: 100,
+      renderCell: (params: any) => (
+         <span>
+            {formatTime(params.row.date * 1000)}
+         </span>
+      )
+   },
+]

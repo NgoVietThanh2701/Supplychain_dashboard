@@ -64,7 +64,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ role, email }) => {
             icon: "success"
          });
          if (role === roles[roles.customer]) {
-            navigate('/login');
+            navigate(`/login/${roles[roles.customer]}`);
          } else {
             navigate('/');
          }
@@ -78,7 +78,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ role, email }) => {
       }
    }
    return (
-      <div className="flex justify-center items-center mt-[200px]">
+      <div className="flex justify-center items-center my-[100px]">
          <div className='flex flex-col gap-7'>
             <div className="space-x-4">
                {otpInputs.map((_, index) => (

@@ -9,7 +9,7 @@ const BackgroundShop = () => {
          <div className='w-full mt-12 flex items-center justify-center'>
             <Header />
          </div>
-         <h3 className='absolute top-[50%] left-[50%] text-white font-bold text-4xl'>Home</h3>
+         <h3 className='absolute top-[50%] left-[50%] text-white font-bold text-4xl'>SHOP</h3>
       </div>
    )
 }

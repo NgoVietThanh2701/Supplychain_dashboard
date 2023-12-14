@@ -6,9 +6,9 @@ import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import { ethers } from 'ethers';
 import { useOutletContext } from 'react-router-dom';
 import StateProduct from '../../../utils/data/statesProduct';
-import { formatToEth } from '../../../utils/function/format';
-import { column3 } from '../../../utils/data/colums';
+import { formatTime, formatToEth } from '../../../utils/function/format';
 import { useSelector } from 'react-redux';
+import { columnTPT } from './PurchaseTPT';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
@@ -39,7 +39,7 @@ const OrderedTPT = () => {
          uid: data.uid.toNumber(),
          productState: data.productState,
          name: data.productDetails.name,
-         feeShip: formatToEth(data.productDetails.feeShip),
+         feeShip: formatToEth(data.customerDetails.feeShip),
          code: data.productDetails.code,
          price: formatToEth(data.productDetails.price),
          priceTPT: formatToEth(data.productDetails.priceThirdParty),
@@ -59,7 +59,7 @@ const OrderedTPT = () => {
       }
    }, [currentUser?.addressWallet]);
 
-   const handleOrder = async (uid: number) => {
+   const handleShipProduct = async (uid: number) => {
       if (!web3Provider) {
          Swal.fire('Opps', 'Vui lòng kết nối với ví', 'error');
          return;
@@ -83,7 +83,7 @@ const OrderedTPT = () => {
       headerName: 'Thao tác',
       width: 80,
       renderCell: (params: any) => (
-         <button onClick={() => handleOrder(params.row.uid)} className='text-white bg-bg-green rounded-md px-3 py-1'>
+         <button onClick={() => handleShipProduct(params.row.uid)} className='text-white bg-bg-green rounded-md px-3 py-1'>
             Gửi
          </button>
 
@@ -97,7 +97,7 @@ const OrderedTPT = () => {
             <h3 className='text-444 text-xl font-medium mb-5'>Danh sách đơn đặt hàng</h3>
          </div>
          {products.length > 0 ?
-            <DataTable columns={column3.concat(action)} rows={products} /> :
+            <DataTable columns={columnTPT.concat(action)} rows={products} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
@@ -107,4 +107,4 @@ const OrderedTPT = () => {
    )
 }
 
-export default OrderedTPT
+export default OrderedTPT;
