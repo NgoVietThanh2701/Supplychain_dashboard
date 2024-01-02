@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import DataTable from '../../../components/Dashboard/DataTable';
 import { apigetUsers } from '../../../services/adminServices';
-import { showShortAddress } from '../../../utils/function/format';
+import { formatTime, showShortAddress } from '../../../utils/function/format';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 

@@ -265,6 +265,11 @@
                      },
                      {
                         "internalType": "string",
+                        "name": "farmerCode",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
                         "name": "longitude",
                         "type": "string"
                      },
@@ -284,6 +289,11 @@
                         "internalType": "address",
                         "name": "thirdParty",
                         "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "thirdPartyCode",
+                        "type": "string"
                      },
                      {
                         "internalType": "string",
@@ -309,6 +319,11 @@
                      },
                      {
                         "internalType": "string",
+                        "name": "deliveryHubCode",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
                         "name": "longitude",
                         "type": "string"
                      },
@@ -328,6 +343,11 @@
                         "internalType": "address",
                         "name": "customer",
                         "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "customerCode",
+                        "type": "string"
                      },
                      {
                         "internalType": "uint256",
@@ -477,6 +497,11 @@
                      },
                      {
                         "internalType": "string",
+                        "name": "farmerCode",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
                         "name": "longitude",
                         "type": "string"
                      },
@@ -496,6 +521,11 @@
                         "internalType": "address",
                         "name": "thirdParty",
                         "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "thirdPartyCode",
+                        "type": "string"
                      },
                      {
                         "internalType": "string",
@@ -521,6 +551,11 @@
                      },
                      {
                         "internalType": "string",
+                        "name": "deliveryHubCode",
+                        "type": "string"
+                     },
+                     {
+                        "internalType": "string",
                         "name": "longitude",
                         "type": "string"
                      },
@@ -540,6 +575,11 @@
                         "internalType": "address",
                         "name": "customer",
                         "type": "address"
+                     },
+                     {
+                        "internalType": "string",
+                        "name": "customerCode",
+                        "type": "string"
                      },
                      {
                         "internalType": "uint256",
@@ -683,6 +723,11 @@
             "internalType": "uint32",
             "name": "_humidity",
             "type": "uint32"
+         },
+         {
+            "internalType": "string",
+            "name": "_farmerCode",
+            "type": "string"
          }
       ],
       "name": "harvestedProduct",
@@ -782,6 +827,11 @@
             "internalType": "string",
             "name": "_addressShip",
             "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_customerCode",
+            "type": "string"
          }
       ],
       "name": "purchaseByCustomer",
@@ -795,6 +845,11 @@
             "internalType": "uint256",
             "name": "_uid",
             "type": "uint256"
+         },
+         {
+            "internalType": "string",
+            "name": "_thirdPartyCode",
+            "type": "string"
          }
       ],
       "name": "purchaseByThirdParty",
@@ -830,6 +885,11 @@
          {
             "internalType": "string",
             "name": "_latitude",
+            "type": "string"
+         },
+         {
+            "internalType": "string",
+            "name": "_deliveryHubCode",
             "type": "string"
          }
       ],

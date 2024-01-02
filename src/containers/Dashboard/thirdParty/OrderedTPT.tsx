@@ -6,7 +6,7 @@ import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import { ethers } from 'ethers';
 import { useOutletContext } from 'react-router-dom';
 import StateProduct from '../../../utils/data/statesProduct';
-import { formatTime, formatToEth } from '../../../utils/function/format';
+import { formatToEth } from '../../../utils/function/format';
 import { useSelector } from 'react-redux';
 import { columnTPT } from './PurchaseTPT';
 

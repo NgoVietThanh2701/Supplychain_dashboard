@@ -14,6 +14,8 @@ import { useOutletContext } from 'react-router-dom';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import { capitalizeFirstLetter } from '../../../utils/function/format';
 import AutoCompleteMap from '../../AutoCompleteMap';
+import { useSelector } from 'react-redux';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
 
 const { v4: uuidv4 } = require('uuid');
 const noImg = require('../../../utils/images/no-data.jpg');
@@ -28,6 +30,7 @@ const pinataConfig = {
 const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
+   const { currentUser } = useSelector((state: any) => state.user);
 
    const [invalidFields, setInvalidFields] = useState<any>([]);
    const [errs, setErrs] = useState(false);
@@ -67,7 +70,7 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
       getCategories();
    }, []);
 
-   const handleHarvested = async () => {
+   async function handleHarvested() {
       let invalids = validate(payload, setInvalidFields);
       if (invalids === 0 && payload.image) {
          try {
@@ -85,7 +88,8 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             });
             const urlImage = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
             const supplychainContract = new SupplyChainContract(web3Provider);
-            await supplychainContract.harvestedProduct(capitalizeFirstLetter(payload.name), uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity);
+            await supplychainContract.harvestedProduct(capitalizeFirstLetter(payload.name), uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity, currentUser?.code);
+            //listenEvent();
             setTimeout(() => {
                getProducts();
             }, 3000);
@@ -99,6 +103,13 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
       } else {
          setErrs(true);
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.on("Harvested", (uid) => {
+         console.log('uid: ----', uid);
+      })
    }
 
    return (
@@ -130,7 +141,6 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
                   </select>
                </div>
             </div>
-
             <div className='flex justify-between gap-3'>
                <InputForm
                   setInvalidFields={setInvalidFields}

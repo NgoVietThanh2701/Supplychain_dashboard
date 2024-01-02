@@ -8,10 +8,13 @@ import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import { useOutletContext } from "react-router-dom";
 import { ethers } from 'ethers';
 import roles from '../../../utils/data/roles';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const RequestUsers = () => {
+
+   const { currentColor } = useStateContext();
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
 
@@ -81,7 +84,7 @@ const RequestUsers = () => {
          width: '150',
          renderCell: (params: any) => (
             <div>
-               <button onClick={() => handleApprove(params.row.code)} className='text-white bg-bg-green rounded-md px-2 py-1'>
+               <button onClick={() => handleApprove(params.row.code)} className='text-white rounded-md px-2 py-1' style={{ backgroundColor: currentColor }}>
                   Chấp nhận
                </button>
                <button onClick={() => handleDelete(params.row.code)} className='bg-bg-red text-white rounded-md px-2 py-1 ml-2'>

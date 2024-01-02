@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import DataTable from '../../../components/Dashboard/DataTable';
 import { apideleteCategory, apigetCategories } from '../../../services/farmerServices';
 import AddCategory from '../../../components/Dashboard/farmer/AddCategory';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const Category = () => {
+
+   const { currentColor } = useStateContext();
 
    const [categories, setCategories] = useState([]);
    const [isOpenModal, setIsOpenModal] = useState(false);
@@ -54,7 +57,7 @@ const Category = () => {
          width: '180',
          renderCell: (params: any) => (
             <div>
-               <button className='text-white bg-bg-green rounded-md px-3 py-1'>
+               <button className='text-white rounded-md px-3 py-1' style={{ backgroundColor: currentColor }}>
                   Sửa
                </button>
                <button onClick={() => deleteCatefory(params.row.code)} className='bg-bg-red text-white rounded-md px-3 py-1 ml-2'>
@@ -70,7 +73,8 @@ const Category = () => {
          {isOpenModal && <AddCategory setIsOpenModal={setIsOpenModal} getCategories={getCategories} />}
          <div className='flex items-center justify-between'>
             <h3 className='text-444 text-xl font-medium mb-5'>Danh sách loại sản phẩm</h3>
-            <button onClick={() => setIsOpenModal(true)} className='text-white bg-bg-green py-[7px] text-sm px-[10px] rounded-lg'>Thêm danh mục</button>
+            <button onClick={() => setIsOpenModal(true)} className='text-white py-[7px] text-sm px-[10px] rounded-lg'
+               style={{ backgroundColor: currentColor }}>Thêm danh mục</button>
          </div>
          {categories.length > 0 ? <DataTable columns={columns} rows={categories} height={65} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>

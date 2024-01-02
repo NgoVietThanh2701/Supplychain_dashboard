@@ -32,9 +32,11 @@ const StateContext = createContext<ContextType>(defaultContextValue); // create 
 
 export const ContextProvider = ({ children }: Props) => {
 
+   const color = localStorage.getItem('colorMode');
+
    const [activeMenu, setActiveMenu] = useState(true);
    const [screenSize, setScreenSize] = useState(0);
-   const [currentColor, setCurrentColor] = useState('#1A97F5');
+   const [currentColor, setCurrentColor] = useState(color || '#1A97F5');
    const [themeSettings, setThemeSettings] = useState(false);
 
    const setColor = (color: any) => {

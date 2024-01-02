@@ -8,10 +8,13 @@ import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import StateProduct from '../../../utils/data/statesProduct';
 import { formatTime, formatToEth } from '../../../utils/function/format';
 import { useSelector } from 'react-redux';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const Harvested = () => {
+
+   const { currentColor } = useStateContext();
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const { currentUser } = useSelector((state: any) => state.user);
@@ -23,7 +26,8 @@ const Harvested = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.Harvested && data.farmerDetails.farmer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.Harvested &&
+            data.farmerDetails.farmerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -52,10 +56,10 @@ const Harvested = () => {
    }
 
    useEffect(() => {
-      if (currentUser?.addressWallet) {
+      if (currentUser?.code) {
          getProducts();
       }
-   }, [currentUser?.addressWallet]);
+   }, [currentUser?.code]);
 
    const handleAddProduct = () => {
       if (!web3Provider) {
@@ -70,7 +74,8 @@ const Harvested = () => {
          {isOpenModal && <HarvestedModal setIsOpenModal={setIsOpenModal} getProducts={getProducts} />}
          <div className='flex items-center justify-between'>
             <h3 className='text-444 text-xl font-medium mb-5'>Danh sách sản phẩm</h3>
-            <button onClick={handleAddProduct} className='text-white bg-bg-green py-[7px] text-sm px-[10px] rounded-lg'>Thêm sản phẩm</button>
+            <button onClick={handleAddProduct} className='text-white py-[7px] text-sm px-[10px] rounded-lg' style={{ backgroundColor: currentColor }}>
+               Thêm sản phẩm</button>
          </div>
          {products.length > 0 ?
             <DataTable columns={columnFM} rows={products} /> :

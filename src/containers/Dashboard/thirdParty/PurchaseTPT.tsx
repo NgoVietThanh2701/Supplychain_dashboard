@@ -11,16 +11,20 @@ import Loading from '../../../components/Loading';
 import SellProductModal from '../../../components/Dashboard/thirdparty/SellProductModal';
 import { columnFM } from '../farmer/OrderFM';
 import { useSelector } from 'react-redux';
+import { apiCreateStatistical } from '../../../services/statistical';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const PurchaseTPT = () => {
 
+   const { currentColor } = useStateContext();
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const { currentUser } = useSelector((state: any) => state.user);
 
-   const [activeTab, setActiveTab] = useState("purchase");
+   const [activeTab, setActiveTab] = useState("waiting-product");
 
+   const [productWaitingConfirm, setProductWaitingConfirm] = useState<any>([]);
    const [productsShip, setProductsShip] = useState<any>([]);
    const [productsReceive, setProductsReceive] = useState<any>([]);
    const [products, setProducts] = useState<any>([]);
@@ -30,12 +34,28 @@ const PurchaseTPT = () => {
    const [isOpenModal, setIsOpenModal] = useState(false);
    const [uid, setUid] = useState(0);
 
+   const getProductsWaitingConfirm = async () => {
+      try {
+         const supplychainContract = new SupplyChainContract();
+         const response = await supplychainContract.getProducts();
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByThirdParty && data.thirdPartyDetails
+            .thirdPartyCode === currentUser?.code));
+         const listProducts = [];
+         for (let i = 0; i < productFilted.length; i++) {
+            listProducts.push(convertObjectProduct(productFilted[i]));
+         }
+         setProductWaitingConfirm(listProducts.reverse());
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
    const getProductsShipByFarmer = async () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
          const productFilted = response.filter((data: any) => (data.productState === StateProduct.ShippedByFarmer && data.thirdPartyDetails
-            .thirdParty === currentUser?.addressWallet));
+            .thirdPartyCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -51,7 +71,7 @@ const PurchaseTPT = () => {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
          const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByThirdParty && data.thirdPartyDetails
-            .thirdParty === currentUser?.addressWallet));
+            .thirdPartyCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -67,7 +87,7 @@ const PurchaseTPT = () => {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
          const productFilted = response.filter((data: any) => (data.productState === StateProduct.SoldByThirdParty && data.thirdPartyDetails
-            .thirdParty === currentUser?.addressWallet));
+            .thirdPartyCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -86,6 +106,7 @@ const PurchaseTPT = () => {
          code: data.productDetails.code,
          price: formatToEth(data.productDetails.price),
          priceTPT: formatToEth(data.productDetails.priceThirdParty),
+         farmerCode: data.farmerDetails.farmerCode,
          category: data.productDetails.category,
          images: data.productDetails.images,
          description: data.productDetails.description,
@@ -97,12 +118,13 @@ const PurchaseTPT = () => {
    }
 
    useEffect(() => {
-      if (currentUser?.addressWallet) {
+      if (currentUser?.code) {
+         getProductsWaitingConfirm();
          getProductsShipByFarmer();
          getProductsReceived();
          getProducts();
       }
-   }, [currentUser?.addressWallet]);
+   }, [currentUser?.code]);
 
    useEffect(() => {
       getLocation();
@@ -129,14 +151,15 @@ const PurchaseTPT = () => {
          headerName: 'Thao tác',
          width: 95,
          renderCell: (params: any) => (
-            <button onClick={() => handleConfirm(params.row.uid)} className='bg-bg-green text-white rounded-md py-1 px-2'>
+            <button onClick={() => handleConfirm(params.row.uid, params.row.price, params.row.farmerCode)} className='text-white rounded-md py-[5px] px-2'
+               style={{ backgroundColor: currentColor }}>
                Nhận hàng
             </button>
          )
       }
    ]
 
-   const handleConfirm = async (uid: number) => {
+   const handleConfirm = async (uid: number, price: number, farmerCode: string) => {
       if (!web3Provider) {
          Swal.fire('Opps', 'Vui lòng kết nối với ví', 'error');
          return;
@@ -148,7 +171,9 @@ const PurchaseTPT = () => {
          setTimeout(() => {
             getProductsShipByFarmer();
             getProductsReceived();
-         }, 3000)
+         }, 3000);
+         const currentDate = new Date();
+         await apiCreateStatistical({ code: farmerCode, revenue: price, spend: 0, dateOfWeek: currentDate });
          setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
@@ -171,7 +196,7 @@ const PurchaseTPT = () => {
          headerName: 'Thao tác',
          width: 95,
          renderCell: (params: any) => (
-            <button onClick={() => handlePostSell(params.row.uid)} className='bg-bg-green text-white rounded-md py-1 px-2'>
+            <button onClick={() => handlePostSell(params.row.uid)} className='text-white rounded-md py-1 px-2' style={{ backgroundColor: currentColor }}>
                Đăng bán
             </button>
          )
@@ -179,6 +204,16 @@ const PurchaseTPT = () => {
    ]
 
    const data = [
+      {
+         label: `Chờ xác nhận đơn hàng (${productWaitingConfirm.length})`,
+         value: "waiting-product",
+         desc: productWaitingConfirm.length > 0 ?
+            <DataTable columns={columnFM} rows={productWaitingConfirm} /> :
+            <div className='flex flex-col gap-3 items-center justify-center mt-10'>
+               <img src={nodata_img} alt='' />
+               Không có dữ liệu nào!
+            </div>
+      },
       {
          label: `Đơn hàng đang giao (${productsShip.length})`,
          value: "purchase",

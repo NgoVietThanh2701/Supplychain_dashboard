@@ -62,10 +62,11 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
          const supplychainContract = new SupplyChainContract(web3Provider);
          const agtContract = new AGTContract(web3Provider);
          await agtContract.approve(supplychainContract._contractAddress, priceTPT + feeShip);
-         await supplychainContract.purchaseByCustomer(uid, feeShip, location);
+         await supplychainContract.purchaseByCustomer(uid, feeShip, location, currentUser?.code);
          setIsLoading(false);
+         Swal.fire('Success', 'Đặt hàng thành công, Theo dõi đơn hàng của bạn trong thông tin cá nhân', 'success');
          setTimeout(() => {
-            navigate(path.SHOP);
+            navigate(path.PURCHARSE_FORM);
          }, 2000)
       } catch (error) {
          setIsLoading(false)
@@ -91,7 +92,7 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
                   <span className='line-clamp-1'>{currentUser?.email}</span>
                </div>
                <div className='flex-auto text-444'>
-                  <span className='line-clamp-2 text-[15px]'>{location} [{distance > 1000 ? `${distance / 1000} km` : `${distance} m`}]</span>
+                  <span className='line-clamp-3 text-[15px]'>{location} [{distance > 1000 ? `${distance / 1000} km` : `${distance} m`}]</span>
                </div>
             </div>
             <h4 className='text-333 font-medium  border-b-1 border-color pb-1 w-[26%]'>Thông tin sản phẩm</h4>
@@ -112,10 +113,10 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
                   <span className='text-333'>Phương thức thanh toán</span>
                   <div className='flex items-center gap-2 mt-2'>
                      <img src="https://docs.material-tailwind.com/icons/metamask.svg" alt="metamask" className="h-5 w-5" />
-                     <span className='text-sm text-333'> Ví Metamask</span>
+                     <span className='text-[15px] text-333'> Ví Metamask</span>
                   </div>
                </div>
-               <div className='flex-auto flex flex-col items-end gap-1 text-sm text-666'>
+               <div className='flex-auto flex flex-col items-end gap-1 text-[15px] text-666'>
                   <div className='flex items-center'>
                      <span className='w-32'>Tổng tiền hàng</span>
                      <span className='w-32'>{priceTPT} AGT</span>
@@ -130,7 +131,7 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
                   </div>
                </div>
             </div>
-            <div className='flex gap-2 items-center mt-1'>
+            <div className='flex gap-2 items-center mt-1 mb-1'>
                <label className='text-666 text-sm w-[400px]' htmlFor="terms">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo Điều khoản của chúng tôi.</label>
                <button onClick={handleBuyProduct} className='text-white bg-bg-green py-1 px-6 rounded-md mx-auto'>Đặt hàng</button>
             </div>

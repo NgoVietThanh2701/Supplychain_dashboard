@@ -1,5 +1,4 @@
-import { TransactionResponse } from "@ethersproject/abstract-provider";
-import { BigNumber, Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 import BaseInterface from "./interfaces/BaseInterface";
 import { rpcProvider, SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from "./config";
 
@@ -28,13 +27,13 @@ export default class SupplyChainContract extends BaseInterface {
    }
 
    // step 1: famer -> harvested product 
-   async harvestedProduct(name: string, code: string, price: number, category: string, images: string, description: string, quantity: number, longitude: string, latitude: string, temp: string, humidity: number) {
-      await this._contract.harvestedProduct(name, code, this._parseToEth(price), category, images, description, quantity, longitude, latitude, temp, humidity, this._option)
+   async harvestedProduct(name: string, code: string, price: number, category: string, images: string, description: string, quantity: number, longitude: string, latitude: string, temp: string, humidity: number, farmerCode: string) {
+      await this._contract.harvestedProduct(name, code, this._parseToEth(price), category, images, description, quantity, longitude, latitude, temp, humidity, farmerCode, this._option);
    }
 
    // step 2: third party purschar product
-   async purchaseByThirdParty(uid: number) {
-      await this._contract.purchaseByThirdParty(uid, this._option);
+   async purchaseByThirdParty(uid: number, thirdPartyCode: string) {
+      await this._contract.purchaseByThirdParty(uid, thirdPartyCode, this._option);
    }
 
    // step 3: farmer ship -> third party
@@ -53,8 +52,8 @@ export default class SupplyChainContract extends BaseInterface {
    }
 
    // step 6: customer buy product
-   async purchaseByCustomer(uid: number, feeShip: number, addressShip: string) {
-      await this._contract.purchaseByCustomer(uid, this._parseToEth(feeShip), addressShip, this._option);
+   async purchaseByCustomer(uid: number, feeShip: number, addressShip: string, customerCode: string) {
+      await this._contract.purchaseByCustomer(uid, this._parseToEth(feeShip), addressShip, customerCode, this._option);
    }
 
    // step 7: third party ship product
@@ -63,8 +62,8 @@ export default class SupplyChainContract extends BaseInterface {
    }
 
    // step 8: delivery hub receive product
-   async receiveByDeliveryHub(uid: number, longitude: string, latitude: string) {
-      await this._contract.receiveByDeliveryHub(uid, longitude, latitude, this._option);
+   async receiveByDeliveryHub(uid: number, longitude: string, latitude: string, deliveryHubCode: string) {
+      await this._contract.receiveByDeliveryHub(uid, longitude, latitude, deliveryHubCode, this._option);
    }
    // step 9: delivery ship product to customer
    async shipByDeliveryHub(uid: number) {
@@ -90,5 +89,4 @@ export default class SupplyChainContract extends BaseInterface {
       const products = await this._contract.getProducts();
       return products;
    }
-
 }

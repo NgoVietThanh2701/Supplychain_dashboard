@@ -8,10 +8,13 @@ import { useOutletContext } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Loading from '../../../components/Loading';
 import { useSelector } from 'react-redux';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const OrderFM = () => {
+
+   const { currentColor } = useStateContext();
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const { currentUser } = useSelector((state: any) => state.user);
@@ -22,7 +25,7 @@ const OrderFM = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByThirdParty && data.farmerDetails.farmer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByThirdParty && data.farmerDetails.farmerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -51,8 +54,10 @@ const OrderFM = () => {
    }
 
    useEffect(() => {
-      getProducts();
-   }, []);
+      if (currentUser?.code) {
+         getProducts();
+      }
+   }, [currentUser?.code]);
 
    const handleOrder = async (uid: number) => {
       if (!web3Provider) {
@@ -77,10 +82,10 @@ const OrderFM = () => {
    {
       field: 'action',
       headerName: 'Thao tác',
-      width: 80,
+      width: 110,
       renderCell: (params: any) => (
-         <button onClick={() => handleOrder(params.row.uid)} className='text-white bg-bg-green rounded-md px-3 py-1'>
-            Gửi
+         <button onClick={() => handleOrder(params.row.uid)} className='text-white rounded-md px-3 py-1' style={{ backgroundColor: currentColor }}>
+            Gửi hàng
          </button>
 
       )

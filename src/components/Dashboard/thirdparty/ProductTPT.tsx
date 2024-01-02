@@ -8,10 +8,14 @@ import Swal from 'sweetalert2';
 import AGTContract from '../../../contracts/AGTContract';
 import Loading from '../../Loading';
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
+import { useSelector } from 'react-redux';
+import { apiCreateStatistical } from '../../../services/statistical';
 
 const ProductCard = ({ data, getProducts }: any) => {
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
+   const { currentUser } = useSelector((state: any) => state.user);
 
    const { currentColor } = useStateContext();
 
@@ -28,10 +32,12 @@ const ProductCard = ({ data, getProducts }: any) => {
          const supplychainContract = new SupplyChainContract(web3Provider);
          const agtContract = new AGTContract(web3Provider);
          await agtContract.approve(supplychainContract._contractAddress, price);
-         await supplychainContract.purchaseByThirdParty(uid);
+         await supplychainContract.purchaseByThirdParty(uid, currentUser?.code);
+         const currentDate = new Date();
+         await apiCreateStatistical({ code: currentUser.code, revenue: 0, spend: price, dateOfWeek: currentDate });
          setTimeout(() => {
             getProducts();
-         }, 3500);
+         }, 3000);
          setIsLoading(false);
       } catch (error) {
          console.log(error)
@@ -59,7 +65,8 @@ const ProductCard = ({ data, getProducts }: any) => {
          </div>
          <h3 className='text-lg text-[#616161] font-bold'>{data.name}</h3>
          <span className='text-green font-bold '>$ {data.price} AGT</span>
-         <button onClick={() => handleBuyProduct(data.uid, data.price)} className={`text-white rounded-md px-3 py-1`} style={{ backgroundColor: currentColor }} >Thu mua</button>
+         <button onClick={() => handleBuyProduct(data.uid, data.price)} className={`text-white rounded-md px-3 py-1`}
+            style={{ backgroundColor: currentColor }} >Thu mua</button>
       </div>
    )
 }

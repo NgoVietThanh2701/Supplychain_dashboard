@@ -1,10 +1,11 @@
-import { FiShoppingBag, FiEdit } from 'react-icons/fi';
-import { RiContactsLine, RiStockLine } from 'react-icons/ri';
-import { AiOutlineShoppingCart } from 'react-icons/ai';
-import { IoMdContacts } from 'react-icons/io';
-import { AiOutlineCalendar } from 'react-icons/ai';
-import { BsKanban } from 'react-icons/bs';
-import { BiColorFill } from 'react-icons/bi';
+import { FiShoppingBag } from 'react-icons/fi';
+import { RiContactsLine } from 'react-icons/ri';
+import { FaShopify } from "react-icons/fa";
+import { PiShoppingCartThin } from "react-icons/pi";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { PiGitPullRequest } from "react-icons/pi";
+import { BiCategory } from "react-icons/bi";
+
 import path from './path'
 
 export const sideBarAdmin = [
@@ -23,7 +24,7 @@ export const sideBarAdmin = [
       links: [
          {
             name: 'Yêu cầu đăng ký',
-            icon: <AiOutlineShoppingCart />,
+            icon: <PiGitPullRequest size={22} />,
             path: path.ADMIN_REQUEST
          },
          {
@@ -51,17 +52,17 @@ export const sideBarFarmer = [
       links: [
          {
             name: 'Sản phẩm',
-            icon: <AiOutlineShoppingCart />,
+            icon: <PiShoppingCartThin />,
             path: path.FARMER_PRODUCT
          },
          {
             name: 'Đơn hàng',
-            icon: <RiContactsLine />,
+            icon: <HiOutlineShoppingBag />,
             path: path.FARMER_ORDER
          },
          {
             name: 'Danh mục',
-            icon: <RiContactsLine />,
+            icon: <BiCategory />,
             path: path.FARMER_CATEGORY
          },
       ],
@@ -84,17 +85,17 @@ export const sideBarThirdParty = [
       links: [
          {
             name: 'Shop',
-            icon: <AiOutlineShoppingCart />,
+            icon: <FaShopify />,
             path: path.THIRDPARTY_SHOP
          },
          {
             name: 'Đơn đặt hàng',
-            icon: <AiOutlineShoppingCart />,
+            icon: <PiShoppingCartThin />,
             path: path.THIRDPARTY_ORDERED
          },
          {
             name: 'Đơn mua',
-            icon: <AiOutlineShoppingCart />,
+            icon: <HiOutlineShoppingBag />,
             path: path.THIRDPARTY_PURCHASE_ORDER
          },
       ],
@@ -117,7 +118,7 @@ export const sideBarDeliveryHub = [
       links: [
          {
             name: 'Đơn hàng',
-            icon: <AiOutlineShoppingCart />,
+            icon: <HiOutlineShoppingBag />,
             path: path.DELIVERYHUB_RECEIVE
          },
       ],

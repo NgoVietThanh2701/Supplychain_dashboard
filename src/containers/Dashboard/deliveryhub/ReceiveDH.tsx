@@ -9,24 +9,45 @@ import { useOutletContext } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react";
 import { useSelector } from 'react-redux';
-import { useJsApiLoader, GoogleMap, MarkerF, InfoBox, DirectionsRenderer } from '@react-google-maps/api';
+import { useJsApiLoader, GoogleMap, MarkerF, InfoBox, DirectionsRenderer, LoadScriptProps } from '@react-google-maps/api';
 import { IoCloseCircleOutline } from 'react-icons/io5';
 import { BsFillBackspaceReverseFill } from "react-icons/bs";
+import { useStateContext } from '../../../contexts/ContextProvider';
 
-declare var window: any;
+const libraries: LoadScriptProps['libraries'] = ['places'];
+
 const nodata_img = require('../../../utils/images/no-data.jpg');
 const broker_img = require('../../../utils/images/broker.png');
 const options = { closeBoxURL: '', enableEventPropagation: true };
 
-const ModalViewProduct = ({ setIsOpenModal, product, directionResponse, duration, distance }: any) => {
+const ModalViewProduct = ({ setIsOpenModal, product }: any) => {
+
+   const { currentColor } = useStateContext();
 
    const { isLoaded } = useJsApiLoader({
       googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_APIKEY || '',
+      libraries: libraries,
    });
    const [map, setMap] = useState<any>( /** @type google.maps.Map */(null));
+   const [directionResponse, setDirectionResponse] = useState(null);
+   const [distance, setDistance] = useState('');
+   const [duration, setDuration] = useState('')
 
    if (!isLoaded) {
       return <Loading />
+   }
+
+   const directionCustomer = async (product: any) => {
+      const directionService = new google.maps.DirectionsService();
+      console.log(product);
+      const result: any = await directionService.route({
+         origin: { lat: Number.parseFloat(product.thirdParty.latitude), lng: Number.parseFloat(product.thirdParty.longitude) },
+         destination: product.customer.addressShip,
+         travelMode: google.maps.TravelMode.DRIVING,
+      });
+      setDirectionResponse(result);
+      setDistance(result.routes[0].legs[0].distance.text);
+      setDuration(result.routes[0].legs[0].duration.text);
    }
 
    return (
@@ -37,11 +58,15 @@ const ModalViewProduct = ({ setIsOpenModal, product, directionResponse, duration
             </button>
             <h3 className='text-green font-medium uppercase text-xl border-b-1 border-color pb-1 w-[50%]'>Xem chi tiết quãng đường vận chuyển</h3>
             <div className='w-full h-full relative'>
-               <div className='w-[160px] h-[85px] absolute bottom-0 z-10 left-0 bg-white flex flex-col text-sm justify-between p-1'>
-                  <button onClick={() => map.panTo({
-                     lat: Number.parseFloat(product?.thirdParty.latitude),
-                     lng: Number.parseFloat(product?.thirdParty.longitude)
-                  })} className='text-white inline-flex gap-2 bg-bg-green px-2 py-1 rounded-md'>Vị trí nhận hàng <BsFillBackspaceReverseFill size={18} /></button>
+               <div className='w-[168px] h-[100px] absolute bottom-0 z-10 left-0 bg-white flex flex-col text-sm justify-between p-1'>
+                  <div className='flex items-center justify-between'>
+                     <button className='text-white  px-2 py-1 rounded-md' style={{ backgroundColor: currentColor }}
+                        onClick={() => directionCustomer(product)}>Xem tuyến đường</button>
+                     <button className='text-red-600' onClick={() => map.panTo({
+                        lat: Number.parseFloat(product?.thirdParty.latitude),
+                        lng: Number.parseFloat(product?.thirdParty.longitude)
+                     })} ><BsFillBackspaceReverseFill size={20} /></button>
+                  </div>
                   <span className='text-444'>Khoảng cách: {distance}</span>
                   <span className='text-444'>Mất khoảng: {duration}</span>
                </div>
@@ -78,6 +103,8 @@ const ModalViewProduct = ({ setIsOpenModal, product, directionResponse, duration
 
 const ReceiveDH = () => {
 
+   const { currentColor } = useStateContext();
+
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const { currentUser } = useSelector((state: any) => state.user);
 
@@ -89,28 +116,14 @@ const ReceiveDH = () => {
    const [activeTab, setActiveTab] = useState("ordered");
    const [isOpenModal, setIsOpenModal] = useState(false);
 
-   const [directionResponse, setDirectionResponse] = useState(null);
-   const [distance, setDistance] = useState('');
-   const [duration, setDuration] = useState('')
-
    const productRef = useRef();
 
    const handleViewMap = async (product: any) => {
+      if (!product) {
+         return;
+      }
       productRef.current = product;
-      await directionCustomer(product);
       setIsOpenModal(true);
-   }
-
-   const directionCustomer = async (product: any) => {
-      const directionService = new google.maps.DirectionsService();
-      const result: any = await directionService.route({
-         origin: { lat: Number.parseFloat(product.thirdParty.latitude), lng: Number.parseFloat(product.thirdParty.longitude) },
-         destination: product.customer.addressShip,
-         travelMode: google.maps.TravelMode.DRIVING,
-      });
-      setDirectionResponse(result);
-      setDistance(result.routes[0].legs[0].distance.text);
-      setDuration(result.routes[0].legs[0].duration.text);
    }
 
    const getProductsShipByTPT = async () => {
@@ -133,7 +146,7 @@ const ReceiveDH = () => {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
          const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByDeliveryHub &&
-            data.deliveryHubDetails.deliveryHub === currentUser?.addressWallet));
+            data.deliveryHubDetails.deliveryHubCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -162,11 +175,11 @@ const ReceiveDH = () => {
    }
 
    useEffect(() => {
-      if (currentUser?.addressWallet) {
+      if (currentUser?.code) {
          getProductsShipByTPT();
          getProductsReceived();
       }
-   }, [currentUser?.addressWallet]);
+   }, [currentUser?.code]);
 
    useEffect(() => {
       getLocation();
@@ -195,7 +208,7 @@ const ReceiveDH = () => {
       try {
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
-         await supplychainContract.receiveByDeliveryHub(uid, longitude, latitude);
+         await supplychainContract.receiveByDeliveryHub(uid, longitude, latitude, currentUser?.code);
          setTimeout(() => {
             getProductsShipByTPT();
             getProductsReceived();
@@ -218,7 +231,7 @@ const ReceiveDH = () => {
          await supplychainContract.shipByDeliveryHub(uid);
          setTimeout(() => {
             getProductsReceived();
-         }, 3000);
+         }, 2000);
          setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
@@ -232,10 +245,10 @@ const ReceiveDH = () => {
       width: 150,
       renderCell: (params: any) => (
          <div className='flex gap-2'>
-            <button onClick={() => handleViewMap(params.row)} className='text-white bg-bg-green rounded-md px-3 py-1'>
+            <button onClick={() => handleViewMap(params.row)} className='text-white rounded-md px-3 py-1 bg-bg-green'>
                Xem
             </button>
-            <button onClick={() => handleConfirm(params.row.uid)} className='text-white bg-bg-green rounded-md px-3 py-1'>
+            <button onClick={() => handleConfirm(params.row.uid)} className='text-white rounded-md px-3 py-1' style={{ backgroundColor: currentColor }}>
                Nhận
             </button>
          </div>
@@ -247,7 +260,7 @@ const ReceiveDH = () => {
       headerName: 'Thao tác',
       width: 80,
       renderCell: (params: any) => (
-         <button onClick={() => handleShip(params.row.uid)} className='text-white bg-bg-green rounded-md px-4 py-1'>
+         <button onClick={() => handleShip(params.row.uid)} className='text-white rounded-md px-6 py-1' style={{ backgroundColor: currentColor }}>
             Gửi
          </button>
 
@@ -280,7 +293,7 @@ const ReceiveDH = () => {
    return (
       <div className='w-auto bg-white mx-5 px-5 py-2 mt-8 rounded-lg'>
          {isLoading && <Loading />}
-         {isOpenModal && <ModalViewProduct product={productRef.current} setIsOpenModal={setIsOpenModal} directionResponse={directionResponse} distance={distance} duration={duration} />}
+         {isOpenModal && <ModalViewProduct product={productRef.current} setIsOpenModal={setIsOpenModal} />}
          <Tabs value={activeTab}>
             <TabsHeader
                className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"

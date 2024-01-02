@@ -13,6 +13,7 @@ import Loading from '../../components/Loading';
 import { IoCloseCircleOutline } from 'react-icons/io5';
 import { BsFillBackspaceReverseFill } from "react-icons/bs";
 import { useJsApiLoader, GoogleMap, MarkerF, PolylineF, InfoBox, DirectionsRenderer, LoadScriptProps } from '@react-google-maps/api';
+import { apiCreateStatistical } from '../../services/statistical';
 
 declare var window: any;
 const nodata_img = require('../../utils/images/no-data.jpg');
@@ -186,7 +187,7 @@ const PurchaseForm = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByCustomer && data.customerDetails.customer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.PurchasedByCustomer && data.customerDetails.customerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -201,7 +202,7 @@ const PurchaseForm = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ShippedByThirdParty && data.customerDetails.customer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ShippedByThirdParty && data.customerDetails.customerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -217,7 +218,7 @@ const PurchaseForm = () => {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
          const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByDeliveryHub &&
-            data.customerDetails.customer === currentUser?.addressWallet));
+            data.customerDetails.customerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -232,7 +233,7 @@ const PurchaseForm = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ShippedByDeliveryHub && data.customerDetails.customer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ShippedByDeliveryHub && data.customerDetails.customerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -247,7 +248,7 @@ const PurchaseForm = () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
-         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByCustomer && data.customerDetails.customer === currentUser?.addressWallet));
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByCustomer && data.customerDetails.customerCode === currentUser?.code));
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
@@ -270,6 +271,8 @@ const PurchaseForm = () => {
          from: showShortAddress(data.thirdPartyDetails.thirdParty, 5),
          to: data.customerDetails.addressShip,
          totalPrice: formatToEth(data.customerDetails.feeShip) + formatToEth(data.productDetails.priceThirdParty),
+         priceTPT: formatToEth(data.productDetails.priceThirdParty),
+         priceDelivery: formatToEth(data.customerDetails.feeShip),
          images: data.productDetails.images,
          quantity: data.productDetails.quantity.toNumber(),
          date: data.productDetails.date.toNumber()
@@ -277,16 +280,19 @@ const PurchaseForm = () => {
    }
 
    useEffect(() => {
-      if (currentUser?.addressWallet) {
+      if (currentUser?.code) {
          getProductsWaitConfirm();
          getProductsShipByTPT();
          getProductsWarehouseDH();
          getProductsShipByDeliveryHub();
          getProductsPurchased();
       }
-   }, [currentUser?.addressWallet]);
+   }, [currentUser?.code]);
 
-   const handleConfirm = async (uid: number) => {
+   const handleConfirm = async (uid: number, TPTCode: string, deliveryCode: string, priceTPT: number, priceDelivery: number) => {
+      const revenueTPT = priceTPT - 0.1 * priceTPT;
+      const revenueDelivery = priceDelivery - 0.1 * priceDelivery;
+      const revenueAdmin = 0.1 * priceTPT + 0.1 * priceDelivery;
       if (!web3Provider) {
          Swal.fire('Opps', 'Vui lòng kết nối với ví', 'error');
          return;
@@ -299,6 +305,10 @@ const PurchaseForm = () => {
             getProductsShipByDeliveryHub();
             getProductsPurchased();
          }, 3000);
+         const currentDate = new Date();
+         await apiCreateStatistical({ code: TPTCode, revenue: revenueTPT, spend: 0, dateOfWeek: currentDate });
+         await apiCreateStatistical({ code: deliveryCode, revenue: revenueDelivery, spend: 0, dateOfWeek: currentDate });
+         await apiCreateStatistical({ code: process.env.REACT_APP_CODE_ADMIN, revenue: revenueAdmin, spend: 0, dateOfWeek: currentDate });
          setIsLoadng(false)
       } catch (error) {
          setIsLoadng(false)
@@ -313,7 +323,7 @@ const PurchaseForm = () => {
       renderCell: (params: any) => (
          <div className='flex gap-2 items-center'>
             <button onClick={() => handleViewMap(params.row)} className='text-white bg-bg-green px-2 py-1 rounded-md'>Xem</button>
-            <button onClick={() => handleConfirm(params.row.uid)} className='text-white bg-bg-green px-1 py-1 rounded-md'>Nhận hàng</button>
+            <button onClick={() => handleConfirm(params.row.uid, params.row.thirdParty.thirdPartyCode, params.row.delivery.deliveryHubCode, params.row.priceTPT, params.row.priceDelivery)} className='text-white bg-bg-green px-1 py-1 rounded-md'>Nhận hàng</button>
          </div>
       )
    }

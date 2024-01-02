@@ -49,13 +49,15 @@ const Register = () => {
       if (invalids === 0) {
          try {
             const supplychainContract = new SupplyChainContract(web3Provider);
+            if (role === roles[roles.customer]) {
+               await supplychainContract.addCustomer(payload.addressWallet);
+            }
             const response = await apiRegister(payload);
             Swal.fire({
                title: "Đăng ký thành công!",
                text: response.data.message,
                icon: "success"
             });
-            await supplychainContract.addCustomer(payload.addressWallet);
             navigate(`./${payload.email}/verify-otp`);
          } catch (error: any) {
             Swal.fire({
