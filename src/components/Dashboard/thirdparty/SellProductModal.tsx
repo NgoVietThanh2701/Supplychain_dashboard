@@ -7,8 +7,11 @@ import { ethers } from 'ethers';
 import Loading from '../../Loading';
 import validate from '../../../utils/function/validateField';
 import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProducts }: any) => {
+
+   const { currentColor } = useStateContext();
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
 
@@ -26,8 +29,6 @@ const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProduct
             const supplychainContract = new SupplyChainContract(web3Provider);
             listenEvent();
             await supplychainContract.sellByThirdParty(uid, Number.parseFloat(payload.price));
-            setIsLoading(false);
-            setIsOpenModal(false);
          } catch (error) {
             console.log(error)
             setIsLoading(false);
@@ -39,6 +40,8 @@ const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProduct
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("SoldByThirdParty", (uid) => {
+         setIsLoading(false);
+         setIsOpenModal(false);
          getProductsReceived();
          getProducts();
       })
@@ -60,7 +63,7 @@ const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProduct
                setValue={setPayload}
                keyPayload='price'
             />
-            <button onClick={handleSellProduct} className='text-white bg-bg-green px-3 py-1 mx-auto rounded-md'>
+            <button onClick={handleSellProduct} className='text-white px-3 py-1 mx-auto rounded-md' style={{ backgroundColor: currentColor }}>
                Đăng bán
             </button>
          </div>

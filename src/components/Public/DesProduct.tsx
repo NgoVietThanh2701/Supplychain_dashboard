@@ -56,7 +56,7 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
    const [isLoading, setIsLoading] = useState(false);
    const { currentUser } = useSelector((state: any) => state.user);
    const navigate = useNavigate();
-   const feeShip = Math.round((distance / 1000) * 3);
+   const feeShip = Math.round(distance * quantity / 1500);
 
    const handleBuyProduct = async () => { //open modal type address for customer
       try {
@@ -66,9 +66,6 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
          listenEvent();
          await agtContract.approve(supplychainContract._contractAddress, priceTPT + feeShip);
          await supplychainContract.purchaseByCustomer(uid, feeShip, location, currentUser?.code);
-         setIsLoading(false);
-         setIsOpenModal(false);
-         Swal.fire('Success', 'Đặt hàng thành công, Theo dõi đơn hàng hồ sơ của bạn', 'success');
       } catch (error) {
          setIsLoading(false);
          setIsOpenModal(false);
@@ -79,6 +76,9 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("PurchasedByCustomer", (uid) => {
+         setIsLoading(false);
+         setIsOpenModal(false);
+         Swal.fire('Success', 'Đặt hàng thành công, Theo dõi đơn hàng hồ sơ của bạn', 'success');
          navigate(path.PURCHARSE_FORM);
       })
    }

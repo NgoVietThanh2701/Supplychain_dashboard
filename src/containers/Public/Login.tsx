@@ -3,7 +3,7 @@ import InputForm from '../../components/Public/InputForm';
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { RiGoogleFill } from "react-icons/ri";
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import validate from '../../utils/function/validateField';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginThunk } from '../../features/authSlice';
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import roles from '../../utils/data/roles';
 import path from '../../utils/data/path';
 import Swal from 'sweetalert2';
-import Header from '../../components/Public/Header';
+import { LiaGripfire } from 'react-icons/lia';
 import Footer from '../../components/Public/Footer';
 
 const loginImg = require('../../utils/images/login.jpg');
@@ -57,7 +57,15 @@ const Login = () => {
 
    return (
       <div className='font-rubik w-full flex flex-col items-center justify-center bg-main-bg'>
-         <Header />
+         <div className='w-5/6 h-[80px] flex justify-between items-center'>
+            <Link to='/' className=' flex items-center'>
+               <LiaGripfire size={38} className='text-green' />
+               <span className='text-green text-xl font-bold'>AGRICHAIN</span>
+            </Link>
+            <span className='text-green'>
+               Bạn cần giúp đỡ?
+            </span>
+         </div>
          <div className='bg-white w-[900px] mt-16 mb-40 p-[30px] rounded-md border-color border-1'>
             <h3 className='ml-32 font-semibold text-primary2 text-4xl mb-3'>Đăng nhập</h3>
             <div className='flex mx-5'>

@@ -36,10 +36,13 @@ const optionsPolyline = {
    zIndex: 1
 };
 
+const libraries: LoadScriptProps['libraries'] = ['places'];
+
 const ModalViewProduct = ({ setIsOpenModal, product }: any) => {
 
    const { isLoaded } = useJsApiLoader({
       googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_APIKEY || '',
+      libraries: libraries,
    });
    const [map, setMap] = useState<any>( /** @type google.maps.Map */(null));
 
@@ -307,7 +310,6 @@ const PurchaseForm = () => {
          await apiCreateStatistical({ code: TPTCode, revenue: revenueTPT, spend: 0, dateOfWeek: currentDate });
          await apiCreateStatistical({ code: deliveryCode, revenue: revenueDelivery, spend: 0, dateOfWeek: currentDate });
          await apiCreateStatistical({ code: process.env.REACT_APP_CODE_ADMIN, revenue: revenueAdmin, spend: 0, dateOfWeek: currentDate });
-         setIsLoadng(false)
       } catch (error) {
          setIsLoadng(false)
          console.log(error);
@@ -317,6 +319,7 @@ const PurchaseForm = () => {
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ReceivedByCustomer", (uid) => {
+         setIsLoadng(false);
          getProductsShipByDeliveryHub();
          getProductsPurchased();
       })

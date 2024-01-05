@@ -172,7 +172,6 @@ const PurchaseTPT = () => {
          await supplychainContract.receiveByThirdParty(uid, longitude, latitude);
          const currentDate = new Date();
          await apiCreateStatistical({ code: farmerCode, revenue: price, spend: 0, dateOfWeek: currentDate });
-         setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
          console.log(error);
@@ -182,6 +181,7 @@ const PurchaseTPT = () => {
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ReceivedByThirdParty", (uid) => {
+         setIsLoading(false);
          getProductsShipByFarmer();
          getProductsReceived();
       })

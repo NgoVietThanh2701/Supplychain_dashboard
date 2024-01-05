@@ -90,8 +90,6 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             const supplychainContract = new SupplyChainContract(web3Provider);
             listenEvent();
             await supplychainContract.harvestedProduct(capitalizeFirstLetter(payload.name), uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity, currentUser?.code);
-            setIsLoading(false);
-            setIsOpenModal(false);
          } catch (error) {
             console.log(error)
             setIsLoading(false);
@@ -105,6 +103,8 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("Harvested", (uid) => {
+         setIsLoading(false);
+         setIsOpenModal(false);
          getProducts();
       })
    }

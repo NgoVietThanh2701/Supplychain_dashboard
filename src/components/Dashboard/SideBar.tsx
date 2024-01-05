@@ -109,7 +109,7 @@ const SideBar = () => {
                            </div>
                         ))}
                      </>}
-                  <button className={`${normalLink} w-64 mt-3`} onClick={logOut}> Logout</button>
+                  <button className={`${normalLink} w-64 mt-3`} onClick={logOut}>Đăng xuất</button>
                </div>
             </>}
       </div>

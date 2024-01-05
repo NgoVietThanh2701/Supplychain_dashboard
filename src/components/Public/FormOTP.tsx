@@ -79,7 +79,8 @@ const FormOTP: React.FC<FormOTPProps> = ({ role, email }) => {
    }
    return (
       <div className="flex justify-center items-center my-[100px]">
-         <div className='flex flex-col gap-7'>
+         <div className='flex flex-col justify-center items-center gap-7'>
+            <h3 className='text-lg text-green font-medium'>Nhập mã OTP tại đây</h3>
             <div className="space-x-4">
                {otpInputs.map((_, index) => (
                   <input

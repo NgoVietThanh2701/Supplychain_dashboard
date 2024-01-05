@@ -49,12 +49,10 @@ const Header = () => {
 
    return (
       <div className='w-5/6 h-[80px] bg-white flex items-center justify-between px-5 rounded-lg'>
-         <div>
-            <Link to='/' className=' flex items-center'>
-               <LiaGripfire size={38} className='text-green' />
-               <span className='text-green text-xl font-bold'>AGRICHAIN</span>
-            </Link>
-         </div>
+         <Link to='/' className=' flex items-center'>
+            <LiaGripfire size={38} className='text-green' />
+            <span className='text-green text-xl font-bold'>AGRICHAIN</span>
+         </Link>
          <ul className='flex gap-6'>
             <NavLink className={({ isActive }) => isActive ? 'border-b-2 border-green-500' : ''} to='/' key='/'>
                Trang chủ

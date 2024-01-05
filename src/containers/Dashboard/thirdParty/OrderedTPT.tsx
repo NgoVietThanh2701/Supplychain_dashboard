@@ -10,10 +10,13 @@ import { formatToEth } from '../../../utils/function/format';
 import { useSelector } from 'react-redux';
 import { columnTPT } from './PurchaseTPT';
 import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
 const OrderedTPT = () => {
+
+   const { currentColor } = useStateContext();
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const [products, setProducts] = useState<any>([]);
    const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +73,6 @@ const OrderedTPT = () => {
          const supplychainContract = new SupplyChainContract(web3Provider);
          listenEvent();
          await supplychainContract.shipByThirdParty(uid);
-         setIsLoading(false);
       } catch (error) {
          setIsLoading(false)
          console.log(error)
@@ -80,6 +82,7 @@ const OrderedTPT = () => {
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ShippedByThirdParty", (uid) => {
+         setIsLoading(false);
          getProducts();
       })
    }
@@ -89,10 +92,9 @@ const OrderedTPT = () => {
       headerName: 'Thao tác',
       width: 80,
       renderCell: (params: any) => (
-         <button onClick={() => handleShipProduct(params.row.uid)} className='text-white bg-bg-green rounded-md px-3 py-1'>
+         <button onClick={() => handleShipProduct(params.row.uid)} className='text-white rounded-md px-4 py-1' style={{ backgroundColor: currentColor }}>
             Gửi
          </button>
-
       )
    }
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { HiOutlineViewfinderCircle } from 'react-icons/hi2';
-import ModalViewProduct from '../ModalViewProduct';
+import ModalViewProduct from './ModalViewProduct';
 import { ethers } from 'ethers';
 import { useOutletContext } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -36,7 +36,6 @@ const ProductCard = ({ data, getProducts }: any) => {
          await supplychainContract.purchaseByThirdParty(uid, currentUser?.code);
          const currentDate = new Date();
          await apiCreateStatistical({ code: currentUser.code, revenue: 0, spend: price, dateOfWeek: currentDate });
-         setIsLoading(false);
       } catch (error) {
          console.log(error)
          setIsLoading(false);
@@ -46,6 +45,7 @@ const ProductCard = ({ data, getProducts }: any) => {
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("PurchasedByThirdParty", (uid) => {
+         setIsLoading(false);
          getProducts();
       })
    }

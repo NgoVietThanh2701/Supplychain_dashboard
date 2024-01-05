@@ -40,7 +40,6 @@ const ModalViewProduct = ({ setIsOpenModal, product }: any) => {
 
    const directionCustomer = async (product: any) => {
       const directionService = new google.maps.DirectionsService();
-      console.log(product);
       const result: any = await directionService.route({
          origin: { lat: Number.parseFloat(product.thirdParty.latitude), lng: Number.parseFloat(product.thirdParty.longitude) },
          destination: product.customer.addressShip,
@@ -211,7 +210,6 @@ const ReceiveDH = () => {
          const supplychainContract = new SupplyChainContract(web3Provider);
          listenEventConfirm();
          await supplychainContract.receiveByDeliveryHub(uid, longitude, latitude, currentUser?.code);
-         setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
          console.log(error);
@@ -221,6 +219,7 @@ const ReceiveDH = () => {
    const listenEventConfirm = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ReceivedByDeliveryHub", (uid) => {
+         setIsLoading(false);
          getProductsShipByTPT();
          getProductsReceived();
       })
@@ -236,7 +235,6 @@ const ReceiveDH = () => {
          const supplychainContract = new SupplyChainContract(web3Provider);
          listenEventShip();
          await supplychainContract.shipByDeliveryHub(uid);
-         setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
          console.log(error);
@@ -246,6 +244,7 @@ const ReceiveDH = () => {
    const listenEventShip = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ShippedByDeliveryHub", (uid) => {
+         setIsLoading(false);
          getProductsReceived();
       })
    }

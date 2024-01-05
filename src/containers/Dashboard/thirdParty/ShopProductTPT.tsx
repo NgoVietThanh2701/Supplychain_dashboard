@@ -4,6 +4,7 @@ import Pagination from '../../../components/Pagination'
 import SupplyChainContract from '../../../contracts/SupplyChainContract'
 import StateProduct from '../../../utils/data/statesProduct'
 import { formatToEth } from '../../../utils/function/format'
+import Loading from '../../../components/Loading'
 
 const ShopProductTPT = () => {
 
@@ -48,7 +49,7 @@ const ShopProductTPT = () => {
 
    return (
       <div>
-         <Pagination itemsPerPage={10} data={products} Component={ProductTPT} getProducts={getProducts} />
+         <Pagination itemsPerPage={10} data={products} Component={ProductTPT} getProducts={getProducts} /> :
       </div>
    )
 }

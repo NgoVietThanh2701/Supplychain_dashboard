@@ -70,7 +70,6 @@ const OrderFM = () => {
          const supplychainContract = new SupplyChainContract(web3Provider);
          listenEvent();
          await supplychainContract.shipByFarmer(uid);
-         setIsLoading(false);
       } catch (error) {
          setIsLoading(false)
          console.log(error)
@@ -80,6 +79,7 @@ const OrderFM = () => {
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ShippedByFarmer", (uid) => {
+         setIsLoading(false);
          getProducts();
       })
    }

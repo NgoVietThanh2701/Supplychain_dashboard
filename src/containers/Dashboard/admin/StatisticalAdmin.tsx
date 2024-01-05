@@ -39,10 +39,6 @@ const StatisticalAdmin = () => {
       { name: 'Chủ nhật', revenue: 0 },
    ];
 
-   let totalRevenue = data.reduce(function (element: any, currentValue: any) {
-      return element + currentValue.revenue;
-   }, 0);
-
    for (let i = 0; i < statistical.length; i++) {
       if ((moment(statistical[i].dateOfWeek).day() + 1) === 2) {
          data[0].revenue += statistical[i].revenue;
@@ -61,6 +57,10 @@ const StatisticalAdmin = () => {
       }
    }
 
+   let totalRevenue = data.reduce(function (element: any, currentValue: any) {
+      return element + currentValue.revenue;
+   }, 0);
+
    const getUsers = async () => {
       try {
          const response = await apigetUsers();
@@ -69,6 +69,7 @@ const StatisticalAdmin = () => {
          console.log(error.data)
       }
    }
+
 
    const getRequestUsers = async () => {
       try {
