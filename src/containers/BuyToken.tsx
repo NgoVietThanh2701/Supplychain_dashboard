@@ -93,7 +93,7 @@ const BuyToken = () => {
          </div>
          <div className='flex justify-between gap-20 p-10'>
             <div className='flex flex-col gap-3'>
-               <h3 className='text-333 text-4xl font-medium'>Mua tiền mã hóa</h3>
+               <h3 className='text-333 text-4xl font-medium'>Mua tiền điện tử</h3>
                <p className='text-666'>Nhiều phương thức thanh toán khác nhau</p>
                <div className='flex items-center justify-between mt-8'>
                   <span className='text-333'>

@@ -14,6 +14,7 @@ import { IoCloseCircleOutline } from 'react-icons/io5';
 import { BsFillBackspaceReverseFill } from "react-icons/bs";
 import { useJsApiLoader, GoogleMap, MarkerF, PolylineF, InfoBox, DirectionsRenderer, LoadScriptProps } from '@react-google-maps/api';
 import { apiCreateStatistical } from '../../services/statistical';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../contracts/config';
 
 declare var window: any;
 const nodata_img = require('../../utils/images/no-data.jpg');
@@ -300,11 +301,8 @@ const PurchaseForm = () => {
       try {
          setIsLoadng(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
+         listenEvent();
          await supplychainContract.receiveByCustomer(uid);
-         setTimeout(() => {
-            getProductsShipByDeliveryHub();
-            getProductsPurchased();
-         }, 3000);
          const currentDate = new Date();
          await apiCreateStatistical({ code: TPTCode, revenue: revenueTPT, spend: 0, dateOfWeek: currentDate });
          await apiCreateStatistical({ code: deliveryCode, revenue: revenueDelivery, spend: 0, dateOfWeek: currentDate });
@@ -314,6 +312,14 @@ const PurchaseForm = () => {
          setIsLoadng(false)
          console.log(error);
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("ReceivedByCustomer", (uid) => {
+         getProductsShipByDeliveryHub();
+         getProductsPurchased();
+      })
    }
 
    const actionPayload = {
@@ -331,7 +337,7 @@ const PurchaseForm = () => {
    const actionEvaluate = {
       field: 'action',
       headerName: 'Thao tác',
-      width: 200,
+      width: 110,
       renderCell: (params: any) => (
          <button className='text-white bg-bg-green px-3 py-1 rounded-md'>Đánh giá</button>
       )

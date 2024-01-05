@@ -88,11 +88,8 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             });
             const urlImage = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
             const supplychainContract = new SupplyChainContract(web3Provider);
+            listenEvent();
             await supplychainContract.harvestedProduct(capitalizeFirstLetter(payload.name), uuidv4(), Number.parseFloat(payload.price), payload.category, urlImage, payload.descriptionProduct, Number.parseFloat(payload.quantity), (payload.longitude).toString(), (payload.latitude).toString(), (payload.temp).toString(), payload.humidity, currentUser?.code);
-            //listenEvent();
-            setTimeout(() => {
-               getProducts();
-            }, 3000);
             setIsLoading(false);
             setIsOpenModal(false);
          } catch (error) {
@@ -107,8 +104,8 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
 
    const listenEvent = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
-      contract.on("Harvested", (uid) => {
-         console.log('uid: ----', uid);
+      contract.once("Harvested", (uid) => {
+         getProducts();
       })
    }
 

@@ -6,6 +6,7 @@ import { useOutletContext } from 'react-router-dom';
 import { ethers } from 'ethers';
 import Loading from '../../Loading';
 import validate from '../../../utils/function/validateField';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
 
 const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProducts }: any) => {
 
@@ -23,11 +24,8 @@ const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProduct
          try {
             setIsLoading(true);
             const supplychainContract = new SupplyChainContract(web3Provider);
+            listenEvent();
             await supplychainContract.sellByThirdParty(uid, Number.parseFloat(payload.price));
-            setTimeout(() => {
-               getProductsReceived();
-               getProducts();
-            }, 3000);
             setIsLoading(false);
             setIsOpenModal(false);
          } catch (error) {
@@ -36,6 +34,14 @@ const SellProductModal = ({ setIsOpenModal, uid, getProductsReceived, getProduct
             setIsOpenModal(false);
          }
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("SoldByThirdParty", (uid) => {
+         getProductsReceived();
+         getProducts();
+      })
    }
 
    return (

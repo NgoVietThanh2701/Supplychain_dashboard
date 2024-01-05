@@ -16,6 +16,8 @@ import { MdAlignHorizontalCenter } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
 import { FaAmazonPay } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
+import { ethers } from 'ethers';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../contracts/config';
 
 //declare var window: any;
 const libraries: LoadScriptProps['libraries'] = ['places'];
@@ -61,17 +63,24 @@ const OrderedModal = ({ setIsOpenModal, web3Provider, uid, name, priceTPT, quant
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
          const agtContract = new AGTContract(web3Provider);
+         listenEvent();
          await agtContract.approve(supplychainContract._contractAddress, priceTPT + feeShip);
          await supplychainContract.purchaseByCustomer(uid, feeShip, location, currentUser?.code);
          setIsLoading(false);
-         Swal.fire('Success', 'Đặt hàng thành công, Theo dõi đơn hàng của bạn trong thông tin cá nhân', 'success');
-         setTimeout(() => {
-            navigate(path.PURCHARSE_FORM);
-         }, 2000)
+         setIsOpenModal(false);
+         Swal.fire('Success', 'Đặt hàng thành công, Theo dõi đơn hàng hồ sơ của bạn', 'success');
       } catch (error) {
-         setIsLoading(false)
+         setIsLoading(false);
+         setIsOpenModal(false);
          console.log(error)
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("PurchasedByCustomer", (uid) => {
+         navigate(path.PURCHARSE_FORM);
+      })
    }
 
    return (

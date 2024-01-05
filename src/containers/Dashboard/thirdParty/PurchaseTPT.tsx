@@ -13,6 +13,7 @@ import { columnFM } from '../farmer/OrderFM';
 import { useSelector } from 'react-redux';
 import { apiCreateStatistical } from '../../../services/statistical';
 import { useStateContext } from '../../../contexts/ContextProvider';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
@@ -167,11 +168,8 @@ const PurchaseTPT = () => {
       try {
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
+         listenEvent();
          await supplychainContract.receiveByThirdParty(uid, longitude, latitude);
-         setTimeout(() => {
-            getProductsShipByFarmer();
-            getProductsReceived();
-         }, 3000);
          const currentDate = new Date();
          await apiCreateStatistical({ code: farmerCode, revenue: price, spend: 0, dateOfWeek: currentDate });
          setIsLoading(false);
@@ -179,6 +177,14 @@ const PurchaseTPT = () => {
          setIsLoading(false);
          console.log(error);
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("ReceivedByThirdParty", (uid) => {
+         getProductsShipByFarmer();
+         getProductsReceived();
+      })
    }
 
    const handlePostSell = async (uid: number) => {

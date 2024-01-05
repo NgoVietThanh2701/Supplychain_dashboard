@@ -32,17 +32,22 @@ const ProductCard = ({ data, getProducts }: any) => {
          const supplychainContract = new SupplyChainContract(web3Provider);
          const agtContract = new AGTContract(web3Provider);
          await agtContract.approve(supplychainContract._contractAddress, price);
+         listenEvent();
          await supplychainContract.purchaseByThirdParty(uid, currentUser?.code);
          const currentDate = new Date();
          await apiCreateStatistical({ code: currentUser.code, revenue: 0, spend: price, dateOfWeek: currentDate });
-         setTimeout(() => {
-            getProducts();
-         }, 3000);
          setIsLoading(false);
       } catch (error) {
          console.log(error)
          setIsLoading(false);
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("PurchasedByThirdParty", (uid) => {
+         getProducts();
+      })
    }
 
    const openModal = () => {

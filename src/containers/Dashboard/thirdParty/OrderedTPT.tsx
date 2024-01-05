@@ -9,6 +9,7 @@ import StateProduct from '../../../utils/data/statesProduct';
 import { formatToEth } from '../../../utils/function/format';
 import { useSelector } from 'react-redux';
 import { columnTPT } from './PurchaseTPT';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
@@ -67,15 +68,20 @@ const OrderedTPT = () => {
       try {
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
+         listenEvent();
          await supplychainContract.shipByThirdParty(uid);
-         setTimeout(() => {
-            getProducts();
-         }, 2500)
          setIsLoading(false);
       } catch (error) {
          setIsLoading(false)
          console.log(error)
       }
+   }
+
+   const listenEvent = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("ShippedByThirdParty", (uid) => {
+         getProducts();
+      })
    }
 
    const action = {

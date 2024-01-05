@@ -13,6 +13,7 @@ import { useJsApiLoader, GoogleMap, MarkerF, InfoBox, DirectionsRenderer, LoadSc
 import { IoCloseCircleOutline } from 'react-icons/io5';
 import { BsFillBackspaceReverseFill } from "react-icons/bs";
 import { useStateContext } from '../../../contexts/ContextProvider';
+import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
 
 const libraries: LoadScriptProps['libraries'] = ['places'];
 
@@ -208,16 +209,21 @@ const ReceiveDH = () => {
       try {
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
+         listenEventConfirm();
          await supplychainContract.receiveByDeliveryHub(uid, longitude, latitude, currentUser?.code);
-         setTimeout(() => {
-            getProductsShipByTPT();
-            getProductsReceived();
-         }, 3000);
          setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
          console.log(error);
       }
+   }
+
+   const listenEventConfirm = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("ReceivedByDeliveryHub", (uid) => {
+         getProductsShipByTPT();
+         getProductsReceived();
+      })
    }
 
    const handleShip = async (uid: number) => {
@@ -228,15 +234,20 @@ const ReceiveDH = () => {
       try {
          setIsLoading(true);
          const supplychainContract = new SupplyChainContract(web3Provider);
+         listenEventShip();
          await supplychainContract.shipByDeliveryHub(uid);
-         setTimeout(() => {
-            getProductsReceived();
-         }, 2000);
          setIsLoading(false);
       } catch (error) {
          setIsLoading(false);
          console.log(error);
       }
+   }
+
+   const listenEventShip = () => {
+      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
+      contract.once("ShippedByDeliveryHub", (uid) => {
+         getProductsReceived();
+      })
    }
 
    const actionReceive = {
