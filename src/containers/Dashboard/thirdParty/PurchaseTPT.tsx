@@ -11,9 +11,8 @@ import Loading from '../../../components/Loading';
 import SellProductModal from '../../../components/Dashboard/thirdparty/SellProductModal';
 import { columnFM } from '../farmer/OrderFM';
 import { useSelector } from 'react-redux';
-import { apiCreateStatistical } from '../../../services/statistical';
 import { useStateContext } from '../../../contexts/ContextProvider';
-import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
+import ReceiveProductModal from '../../../components/Dashboard/thirdparty/ReceiveProductModal';
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
@@ -29,11 +28,12 @@ const PurchaseTPT = () => {
    const [productsShip, setProductsShip] = useState<any>([]);
    const [productsReceive, setProductsReceive] = useState<any>([]);
    const [products, setProducts] = useState<any>([]);
-   const [longitude, setLongitude] = useState('');
-   const [latitude, setLatitude] = useState('');
    const [isLoading, setIsLoading] = useState(false);
    const [isOpenModal, setIsOpenModal] = useState(false);
+   const [isOpenModalReceive, setIsOpenModalReceive] = useState(false);
    const [uid, setUid] = useState(0);
+   const [price, setPrice] = useState(0);
+   const [farmerCode, setFarmerCode] = useState('');
 
    const getProductsWaitingConfirm = async () => {
       try {
@@ -127,32 +127,13 @@ const PurchaseTPT = () => {
       }
    }, [currentUser?.code]);
 
-   useEffect(() => {
-      getLocation();
-   }, [])
-
-   const getLocation = () => {
-      navigator.geolocation.getCurrentPosition(function (position) {
-         setLongitude(position.coords.longitude.toString());
-         setLatitude(position.coords.latitude.toString());
-      },
-         (error: any) => {
-            // Xử lý khi người dùng không cho phép truy cập vị trí hoặc có lỗi khác xảy ra
-            switch (error.code) {
-               case error.PERMISSION_DENIED:
-                  Swal.fire('Opps!', 'Vui lòng thêm quyền truy cập vị trí', 'error');
-                  break;
-            }
-         })
-   }
-
    const actionReceive = [
       {
          field: 'action',
          headerName: 'Thao tác',
          width: 95,
          renderCell: (params: any) => (
-            <button onClick={() => handleConfirm(params.row.uid, params.row.price, params.row.farmerCode)} className='text-white rounded-md py-[5px] px-2'
+            <button onClick={() => openModalReveive(params.row.uid, params.row.price, params.row.farmerCode)} className='text-white rounded-md py-[5px] px-2'
                style={{ backgroundColor: currentColor }}>
                Nhận hàng
             </button>
@@ -160,31 +141,15 @@ const PurchaseTPT = () => {
       }
    ]
 
-   const handleConfirm = async (uid: number, price: number, farmerCode: string) => {
+   const openModalReveive = async (uid: number, price: number, farmerCode: string) => {
       if (!web3Provider) {
          Swal.fire('Opps', 'Vui lòng kết nối với ví', 'error');
          return;
       }
-      try {
-         setIsLoading(true);
-         const supplychainContract = new SupplyChainContract(web3Provider);
-         listenEvent();
-         await supplychainContract.receiveByThirdParty(uid, longitude, latitude);
-         const currentDate = new Date();
-         await apiCreateStatistical({ code: farmerCode, revenue: price, spend: 0, dateOfWeek: currentDate });
-      } catch (error) {
-         setIsLoading(false);
-         console.log(error);
-      }
-   }
-
-   const listenEvent = () => {
-      let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
-      contract.once("ReceivedByThirdParty", (uid) => {
-         setIsLoading(false);
-         getProductsShipByFarmer();
-         getProductsReceived();
-      })
+      setUid(uid);
+      setPrice(price);
+      setFarmerCode(farmerCode);
+      setIsOpenModalReceive(true);
    }
 
    const handlePostSell = async (uid: number) => {
@@ -256,6 +221,7 @@ const PurchaseTPT = () => {
       <div className='w-auto bg-white mx-5 px-5 py-2 mt-8 rounded-lg'>
          {isLoading && <Loading />}
          {isOpenModal && <SellProductModal setIsOpenModal={setIsOpenModal} uid={uid} getProductsReceived={getProductsReceived} getProducts={getProducts} />}
+         {isOpenModalReceive && <ReceiveProductModal getProductsShipByFarmer={getProductsShipByFarmer} getProductsReceived={getProductsReceived} price={price} farmerCode={farmerCode} uid={uid} setIsOpenModalReceive={setIsOpenModalReceive} />}
          <Tabs value={activeTab}>
             <TabsHeader
                className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"

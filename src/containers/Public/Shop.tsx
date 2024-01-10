@@ -16,7 +16,6 @@ const Shop = () => {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
          const productFilted = response.filter((data: any) => data.productState === StateProduct.SoldByThirdParty);
-         console.log(productFilted)
          const listProducts = [];
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));

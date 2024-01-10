@@ -37,10 +37,6 @@ const StatisticalDH = () => {
       { name: 'Chủ nhật', revenue: 0 },
    ];
 
-   let totalRevenue = data.reduce(function (element: any, currentValue: any) {
-      return element + currentValue.revenue;
-   }, 0);
-
    for (let i = 0; i < statistical.length; i++) {
       if ((moment(statistical[i].dateOfWeek).day() + 1) === 2) {
          data[0].revenue += statistical[i].revenue;
@@ -58,6 +54,10 @@ const StatisticalDH = () => {
          data[6].revenue += statistical[i].revenue;
       }
    }
+
+   let totalRevenue = data.reduce(function (element: any, currentValue: any) {
+      return element + currentValue.revenue;
+   }, 0);
 
    const getProductsReceived = async () => {
       try {

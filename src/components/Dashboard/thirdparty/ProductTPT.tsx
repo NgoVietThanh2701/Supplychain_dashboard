@@ -60,7 +60,7 @@ const ProductCard = ({ data, getProducts }: any) => {
 
    return (
       <div className='border-item-product pt-1 pb-2 flex flex-col rounded-md items-center gap-1.5 group relative bg-white'>
-         {isOpenModal && <ModalViewProduct setIsOpenModal={setIsOpenModal} product={data} />}
+         {isOpenModal && <ModalViewProduct setIsOpenModal={setIsOpenModal} product={data} handleBuyProduct={handleBuyProduct} />}
          {isLoading && <Loading />}
          <button onClick={openModal} className='p-[10px] rounded-full bg-[#49A760] absolute z-10 top-2 right-0 opacity-0 group-hover:opacity-100 transition-all group-hover:transform group-hover:translate-x-[-30%] duration-300'>
             <HiOutlineViewfinderCircle size={20} color='white' />
