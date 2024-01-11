@@ -16,6 +16,7 @@ import { capitalizeFirstLetter } from '../../../utils/function/format';
 import AutoCompleteMap from '../../AutoCompleteMap';
 import { useSelector } from 'react-redux';
 import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
 const { v4: uuidv4 } = require('uuid');
 const noImg = require('../../../utils/images/no-data.jpg');
@@ -28,6 +29,8 @@ const pinataConfig = {
 };
 
 const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
+
+   const { currentColor } = useStateContext();
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const { currentUser } = useSelector((state: any) => state.user);
@@ -193,7 +196,7 @@ const HarvestedModal = ({ setIsOpenModal, getProducts }: any) => {
             </div>
             {errs && <span className='text-red-700 text-sm mx-auto italic'>Vui lòng cung cấp dầy đủ thông tin!</span>}
             <button onClick={handleHarvested}
-               className='text-white bg-bg-green mx-auto px-4 py-2 mt-1 rounded-md '>
+               className='text-white mx-auto px-4 py-2 mt-1 rounded-md' style={{ backgroundColor: currentColor }}>
                Thêm sản phẩm
             </button>
          </div>

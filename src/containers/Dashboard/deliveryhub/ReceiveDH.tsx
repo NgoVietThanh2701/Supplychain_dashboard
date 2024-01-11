@@ -110,6 +110,7 @@ const ReceiveDH = () => {
 
    const [productsShipByTPT, setProductsShipByTPT] = useState<any>([]);
    const [productsReceived, setProductsReceived] = useState<any>([]);
+   const [productsDeliveryed, setProductsDeliveryed] = useState<any>([]);
    const [isLoading, setIsLoading] = useState(false);
    const [longitude, setLongitude] = useState('');
    const [latitude, setLatitude] = useState('');
@@ -157,6 +158,22 @@ const ReceiveDH = () => {
       }
    }
 
+   const getProductsDeliveryed = async () => {
+      try {
+         const supplychainContract = new SupplyChainContract();
+         const response = await supplychainContract.getProducts();
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByCustomer &&
+            data.deliveryHubDetails.deliveryHubCode === currentUser?.code));
+         const listProducts = [];
+         for (let i = 0; i < productFilted.length; i++) {
+            listProducts.push(convertObjectProduct(productFilted[i]));
+         }
+         setProductsDeliveryed(listProducts.reverse());
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
    const convertObjectProduct = (data: any) => {
       return {
          uid: data.uid.toNumber(),
@@ -178,6 +195,7 @@ const ReceiveDH = () => {
       if (currentUser?.code) {
          getProductsShipByTPT();
          getProductsReceived();
+         getProductsDeliveryed();
       }
    }, [currentUser?.code]);
 
@@ -293,6 +311,16 @@ const ReceiveDH = () => {
          value: "warehouse",
          desc: productsReceived.length > 0 ?
             <DataTable columns={columnDelveryHub.concat(actionShip)} rows={productsReceived} /> :
+            <div className='flex flex-col gap-3 items-center justify-center mt-10'>
+               <img src={nodata_img} alt='' />
+               Không có dữ liệu nào!
+            </div>
+      },
+      {
+         label: `Đơn hàng đã giao (${productsDeliveryed.length})`,
+         value: "deliveryed",
+         desc: productsDeliveryed.length > 0 ?
+            <DataTable columns={columnDelveryHub} rows={productsDeliveryed} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!

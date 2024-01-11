@@ -36,7 +36,7 @@ const Product = ({ dataProduct }: any) => {
       <div className='w-5/6 flex flex-col items-center gap-4 mt-10 py-7'>
          <p className='text-green'>GHÉ TẠI ĐÂY</p>
          <h3 className='text-4xl text-333 font-bold'>Mua sản phẩm của chúng tôi</h3>
-         <p className='text-666 text-center px-72 leading-7'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut laboreonsectetur adipiscinet dolore.</p>
+         <p className='text-666 text-center px-72 leading-7 mb-3'>Sản phẩm chất lượng cao, nguồn gốc rõ ràng, giá thành rẻ, đảm bảo tiêu chuẩn tiêu chí quyền lợi cho người tiêu dùng.</p>
          <div className='w-full flex flex-wrap -m-2'>
             {dataProduct?.map((product: any) => (
                <div key={product.uid} className='w-1/5 p-2'>

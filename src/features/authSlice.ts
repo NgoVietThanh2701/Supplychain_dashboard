@@ -5,7 +5,7 @@ import { apiLogin, apiRefreshToken } from "../services/authServices";
 const initState = {
    isLoggedIn: false,
    token: null,
-   updateError: false,
+   error: false,
    msg: "",
 }
 
@@ -33,7 +33,7 @@ export const authSlice = createSlice({
       });
       builder.addCase(loginThunk.rejected, (state, action: any) => {
          state.msg = action.payload;
-         state.updateError = !state.updateError;
+         state.error = !state.error;
       });
    }
 });

@@ -9,6 +9,7 @@ import 'moment/locale/vi'
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import StateProduct from '../../../utils/data/statesProduct';
 import { useSelector } from 'react-redux';
+import { CiBag1 } from "react-icons/ci";
 
 const StatisticalDH = () => {
 
@@ -17,6 +18,7 @@ const StatisticalDH = () => {
 
    const [statistical, setStatistical] = useState<any>([]);
    const [productsOrdered, setProductsOrdered] = useState(0);
+   const [productsDeliveryed, setProductsDeliveryed] = useState(0);
 
    const getStatistical = async () => {
       try {
@@ -71,10 +73,23 @@ const StatisticalDH = () => {
       }
    }
 
+   const getProductsDeliveryed = async () => {
+      try {
+         const supplychainContract = new SupplyChainContract();
+         const response = await supplychainContract.getProducts();
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByCustomer &&
+            data.deliveryHubDetails.deliveryHubCode === currentUser?.code));
+         setProductsDeliveryed(productFilted.length);
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
    useEffect(() => {
       if (currentUser?.code) {
          getProductsReceived();
          getStatistical();
+         getProductsDeliveryed();
       }
    }, [currentUser?.code]);
 
@@ -87,8 +102,8 @@ const StatisticalDH = () => {
                <span className='text-444'>Đơn hàng</span>
             </div>
             <div className='flex flex-col gap-1.5 bg-white w-56 px-6 py-4 rounded-lg'>
-               <div className='bg-[#EBFAF2] p-4 rounded-full mx-auto ml-auto'><HiOutlineRefresh color='#00C292' className='p-0.5' size={30} /></div>
-               <span className='text-333 font-bold text-xl'>36</span>
+               <div className='bg-[#EBFAF2] p-4 rounded-full mx-auto ml-auto'><CiBag1 color='#00C292' className='p-0.5' size={30} /></div>
+               <span className='text-333 font-bold text-xl'>{productsDeliveryed}</span>
                <span className='text-444'>Đơn hàng đã giao</span>
             </div>
          </div>

@@ -9,6 +9,7 @@ import { HiOutlineRefresh } from 'react-icons/hi'
 import SupplyChainContract from '../../../contracts/SupplyChainContract';
 import StateProduct from '../../../utils/data/statesProduct';
 import { useSelector } from 'react-redux';
+import { CiBag1 } from "react-icons/ci";
 
 const StatisticalTPT = () => {
 
@@ -17,6 +18,7 @@ const StatisticalTPT = () => {
    const [products, setProductsLength] = useState(0);
    const [productsReceive, setProductsReceive] = useState(0);
    const [productsOrdered, setProductsOrdered] = useState(0);
+   const [productsSold, setProductsSold] = useState(0);
 
    const getStatistical = async () => {
       try {
@@ -106,11 +108,24 @@ const StatisticalTPT = () => {
       }
    }
 
+   const getProductsSold = async () => {
+      try {
+         const supplychainContract = new SupplyChainContract();
+         const response = await supplychainContract.getProducts();
+         const productFilted = response.filter((data: any) => (data.productState === StateProduct.ReceivedByCustomer && data.thirdPartyDetails
+            .thirdPartyCode === currentUser?.code));
+         setProductsSold(productFilted.length);
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
    useEffect(() => {
       if (currentUser?.code) {
          getProducts(); // product
          getProductsReceived(); // warehouse
          getProductsOrdered(); // ordered
+         getProductsSold();
          getStatistical();
       }
    }, [currentUser?.code]);
@@ -132,6 +147,11 @@ const StatisticalTPT = () => {
                <div className='bg-[#EBFAF2] p-4 rounded-full mx-auto ml-auto'><HiOutlineRefresh color='#00C292' className='p-0.5' size={30} /></div>
                <span className='text-333 font-bold text-xl'>{productsOrdered}</span>
                <span className='text-444'>Đơn đặt hàng</span>
+            </div>
+            <div className='flex flex-col gap-1.5 bg-white w-56 px-6 py-4 rounded-lg'>
+               <div className='bg-[#EBFAF2] p-4 rounded-full mx-auto ml-auto'><CiBag1 color='#00C292' className='p-0.5' size={30} /></div>
+               <span className='text-333 font-bold text-xl'>{productsSold}</span>
+               <span className='text-444'>Sản phẩm đã bán</span>
             </div>
          </div>
          <div className='flex gap-3 mt-8 pt-5 pb-3 px-5 bg-white'>

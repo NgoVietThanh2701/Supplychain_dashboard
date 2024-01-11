@@ -71,7 +71,8 @@ const BuyToken = () => {
          setIsOpenModal(true);
       } catch (error) {
          setIsLoading(false)
-         setTokenBNB(0)
+         setTokenBNB(0);
+         Swal.fire('Opps', 'Giao dịch thất bại', 'error');
       }
    }
 

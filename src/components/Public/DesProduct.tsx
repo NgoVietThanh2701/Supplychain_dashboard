@@ -204,9 +204,9 @@ const DesProduct = ({ product, onConnectMetamask, address, web3Provider }: any) 
                      <img src={product?.images} className='w-full h-full object-cover' alt="" />
                   </div>
                   <div className='w-3/5 flex flex-col pt-1 gap-4'>
-                     <p className='text-333 leading-8 text-xl line-clamp-2'>[{product?.description}]</p>
+                     <p className='text-333 leading-7 text-xl line-clamp-3'>[{product?.description}]</p>
                      <h3 className='text-3xl font-bold text-333'>{product?.name}</h3>
-                     <p className='text-444 font-medium text-xl'>Giá:  {product?.priceTPT} GPT</p>
+                     <p className='text-444 font-medium text-xl'>Giá:  {product?.priceTPT} AGT</p>
                      <p className='text-444 font-medium text-xl'>{`Khối lượng: ${product?.quantity} Kg`}</p>
                      <div className='flex gap-[3px] items-center'>
                         {Array.from({ length: 5 }, (value: any, index: any) => (

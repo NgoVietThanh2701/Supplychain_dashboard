@@ -10,6 +10,7 @@ import Loading from '../../../components/Loading';
 import { useSelector } from 'react-redux';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { SUPPLYCHAIN_ADDRESS, getAbiSupplyChain } from '../../../contracts/config';
+import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react";
 
 const nodata_img = require('../../../utils/images/no-data.jpg');
 
@@ -19,10 +20,13 @@ const OrderFM = () => {
 
    const web3Provider: ethers.providers.Web3Provider = useOutletContext();
    const { currentUser } = useSelector((state: any) => state.user);
-   const [products, setProducts] = useState<any>([]);
+   const [productsOrdered, setProductsOrdered] = useState<any>([]);
+   const [productsSold, setProductsSold] = useState<any>([]);
    const [isLoading, setIsLoading] = useState(false);
 
-   const getProducts = async () => {
+   const [activeTab, setActiveTab] = useState("ordered");
+
+   const getProductsOrdered = async () => {
       try {
          const supplychainContract = new SupplyChainContract();
          const response = await supplychainContract.getProducts();
@@ -31,7 +35,23 @@ const OrderFM = () => {
          for (let i = 0; i < productFilted.length; i++) {
             listProducts.push(convertObjectProduct(productFilted[i]));
          }
-         setProducts(listProducts.reverse());
+         setProductsOrdered(listProducts.reverse());
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   const getProductsSold = async () => {
+      try {
+         const supplychainContract = new SupplyChainContract();
+         const response = await supplychainContract.getProducts();
+         console.log(response)
+         const productFilted = response.filter((data: any) => (data.thirdPartyDetails.longitude !== "" && data.farmerDetails.farmerCode === currentUser?.code));
+         const listProducts = [];
+         for (let i = 0; i < productFilted.length; i++) {
+            listProducts.push(convertObjectProduct(productFilted[i]));
+         }
+         setProductsSold(listProducts.reverse());
       } catch (error) {
          console.log(error);
       }
@@ -56,7 +76,8 @@ const OrderFM = () => {
 
    useEffect(() => {
       if (currentUser?.code) {
-         getProducts();
+         getProductsOrdered();
+         getProductsSold();
       }
    }, [currentUser?.code]);
 
@@ -80,7 +101,8 @@ const OrderFM = () => {
       let contract = new ethers.Contract(SUPPLYCHAIN_ADDRESS, getAbiSupplyChain(), web3Provider);
       contract.once("ShippedByFarmer", (uid) => {
          setIsLoading(false);
-         getProducts();
+         getProductsOrdered();
+         //getProductsSold();
       })
    }
 
@@ -97,20 +119,50 @@ const OrderFM = () => {
       )
    }
 
-
-   return (
-      <div className='w-auto bg-white mx-5 px-5 py-5 mt-14 rounded-lg'>
-         {isLoading && <Loading />}
-         <div className='flex items-center justify-between'>
-            <h3 className='text-444 text-xl font-medium mb-5'>Danh sách đơn đặt hàng</h3>
-         </div>
-         {products.length > 0 ?
-            <DataTable columns={columnFM.concat(action)} rows={products} /> :
+   const data = [
+      {
+         label: `Đơn hàng (${productsOrdered.length})`,
+         value: "ordered",
+         desc: productsOrdered.length > 0 ?
+            <DataTable columns={columnFM.concat(action)} rows={productsOrdered} /> :
             <div className='flex flex-col gap-3 items-center justify-center mt-10'>
                <img src={nodata_img} alt='' />
                Không có dữ liệu nào!
             </div>
-         }
+      },
+      {
+         label: `Đã bán (${productsSold.length})`,
+         value: "sold",
+         desc: productsSold.length > 0 ?
+            <DataTable columns={columnFM} rows={productsSold} /> :
+            <div className='flex flex-col gap-3 items-center justify-center mt-10'>
+               <img src={nodata_img} alt='' />
+               Không có dữ liệu nào!
+            </div>
+      },
+   ]
+
+   return (
+      <div className='w-auto bg-white mx-5 px-5 py-5 mt-8 rounded-lg'>
+         {isLoading && <Loading />}
+         <Tabs value={activeTab}>
+            <TabsHeader
+               className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
+               indicatorProps={{ className: "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none" }}>
+               {data.map(({ label, value }) => (
+                  <Tab key={value} value={value} onClick={() => setActiveTab(value)} className={activeTab === value ? "text-gray-900 border-b-2 border-green-600 " : ""} >
+                     {label}
+                  </Tab>
+               ))}
+            </TabsHeader>
+            <TabsBody>
+               {data.map(({ value, desc }) => (
+                  <TabPanel key={value} value={value}>
+                     {desc}
+                  </TabPanel>
+               ))}
+            </TabsBody>
+         </Tabs>
       </div>
    )
 }

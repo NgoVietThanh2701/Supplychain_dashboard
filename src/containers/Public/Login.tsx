@@ -6,7 +6,7 @@ import { RiGoogleFill } from "react-icons/ri";
 import { Link, useParams } from 'react-router-dom';
 import validate from '../../utils/function/validateField';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginThunk } from '../../features/authSlice';
+import { loginThunk, resetAuth } from '../../features/authSlice';
 import { useNavigate } from 'react-router-dom';
 import roles from '../../utils/data/roles';
 import path from '../../utils/data/path';
@@ -21,7 +21,7 @@ const Login = () => {
    const { role } = useParams();
    const dispatch = useDispatch<any>();
    const navigate = useNavigate();
-   const { isLoggedIn, msg, updateError } = useSelector((state: any) => state.auth);
+   const { isLoggedIn, msg, error } = useSelector((state: any) => state.auth);
 
    const [invalidFields, setInvalidFields] = useState([])
    const [payload, setPayload] = useState({
@@ -35,8 +35,9 @@ const Login = () => {
    }, []);
 
    useEffect(() => {
-      msg && Swal.fire('Đăng nhập thất bại!', msg, 'error');
-   }, [updateError, msg])
+      dispatch(resetAuth());
+      msg !== "" && Swal.fire('Đăng nhập thất bại!', msg, 'error');
+   }, [error, msg])
 
    /* when isLoggedIn changed => navigate home */
    useEffect(() => {
