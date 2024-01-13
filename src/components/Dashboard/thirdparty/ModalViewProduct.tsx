@@ -15,8 +15,6 @@ const ModalViewProduct = ({ setIsOpenModal, product, handleBuyProduct }: any) =>
    const [localtion, setLocation] = useState('');
    const [name, setName] = useState('');
 
-   console.log(product);
-
    const getInfoFarmer = async () => {
       try {
          const responst = await apiGetInfoUser(product?.farmerDetails?.farmerCode);
